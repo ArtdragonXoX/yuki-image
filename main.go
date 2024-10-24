@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "yuki-image/bootstrap"
 
+func main() {
+	bootstrap.InitServer()
 }

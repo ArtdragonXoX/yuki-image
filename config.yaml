@@ -1,0 +1,11 @@
+server:
+  port: 7415
+  token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ
+db:
+  host: 8.134.48.192
+  port: 3306
+  name: yuki_image_db
+  user: yuki_image
+  password: 12345678
+  max_open_conns: 10
+  max_idle_conns: 5
