@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"yuki-image/conf"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
@@ -17,7 +19,7 @@ func InitDataBase() error {
 	log.Println("Connecting to MySQL:", dsn)
 
 	if err != nil {
-		log.Println("Open database error!")
+		log.Println("Open database error!", err)
 		return err
 	}
 	db.SetMaxIdleConns(data.MaxIdle)
