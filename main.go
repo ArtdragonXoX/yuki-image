@@ -1,6 +1,8 @@
 package main
 
-import "yuki-image/bootstrap"
+import (
+	"yuki-image/bootstrap"
+)
 
 func main() {
 	bootstrap.InitServer()
