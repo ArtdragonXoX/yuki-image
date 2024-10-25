@@ -14,7 +14,7 @@ func InsertImage(image model.Image) error {
 		return err
 	}
 	time := time.Now().Format("2006-01-02 15:04:05")
-	_, err = stmt.Exec(image.Id, image.Name, image.Url, image.Album, image.Pathname, image.OriginName, image.Size, image.Mimetype, time)
+	_, err = stmt.Exec(image.Id, image.Name, image.Url, image.AlbumId, image.Pathname, image.OriginName, image.Size, image.Mimetype, time)
 	if imagetmp, err := utils.PrettyStruct(image); err != nil {
 		log.Println("Pretty struct err:", err)
 		log.Println(sql, image)

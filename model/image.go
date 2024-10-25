@@ -1,10 +1,10 @@
 package model
 
 type Image struct {
-	Id         string  `json:"key"`
+	Id         string  `json:"id"`
 	Name       string  `json:"name"`
 	Url        string  `json:"url"`
-	Album      string  `json:"album"`
+	AlbumId    uint64  `json:"album_id"`
 	Pathname   string  `json:"pathname"`
 	OriginName string  `json:"origin_name"`
 	Size       float64 `json:"size"`
