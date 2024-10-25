@@ -10,6 +10,6 @@ var server *gin.Engine
 
 func InitHandlers() {
 	server = gin.Default()
-	server.Static("/i", "./localImage")
+	server.Static("/i", conf.Conf.Server.Path)
 	server.Run(":" + conf.Conf.Server.Port)
 }
