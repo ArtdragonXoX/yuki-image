@@ -35,17 +35,17 @@ func SelectFormat(ctx *gin.Context) {
 	log.Println(id)
 	format, err := db.SelectFormat(uint64(id))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 401, Msg: "查询失败"})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败"})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 200, Msg: "查询成功", Data: gin.H{"format": format}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"format": format}})
 }
 
 func SelectAllFormat(ctx *gin.Context) {
 	formats, err := db.SelectAllFormat()
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 401, Msg: "查询失败"})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败"})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 200, Msg: "查询成功", Data: gin.H{"formats": formats}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"formats": formats}})
 }

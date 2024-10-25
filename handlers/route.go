@@ -19,6 +19,7 @@ func InitAlbum() {
 	albumRoute := api.Group("/album")
 	{
 		albumRoute.POST("/", InsertAlbum)
+		albumRoute.GET("/:id", SelectAlbum)
 	}
 }
 

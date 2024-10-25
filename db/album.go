@@ -40,3 +40,21 @@ func SelectAlbum(id uint64) (model.Album, error) {
 	err := db.QueryRow(sql, id).Scan(&album.Id, &album.Name, &album.MaxHeight, &album.MaxWidth, &album.UpdateTime, &album.CreateTime)
 	return album, err
 }
+
+func SelectAllAlbum() ([]model.Album, error) {
+	sql := "SELECT * FROM tbl_album"
+	rows, err := db.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	albums := make([]model.Album, 0)
+	for rows.Next() {
+		var album model.Album
+		err = rows.Scan(&album.Id, &album.Name, &album.MaxHeight, &album.MaxWidth, &album.UpdateTime, &album.CreateTime)
+		if err != nil {
+			return nil, err
+		}
+		albums = append(albums, album)
+	}
+	return albums, nil
+}
