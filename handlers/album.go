@@ -80,3 +80,18 @@ func SelectFormatSupport(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"format_support": format_support}})
 }
+
+func DeleteFormatSupport(ctx *gin.Context) {
+	var formatSupport model.FormatSupport
+	err := ctx.ShouldBindJSON(&formatSupport)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "参数错误"})
+		return
+	}
+	err = db.DeleteFormatSupport(formatSupport)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "删除失败"})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "删除成功", Data: nil})
+}

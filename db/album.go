@@ -13,6 +13,7 @@ func InsertAlbum(album model.Album) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer stmt.Close()
 	time := time.Now().Format("2006-01-02 15:04:05")
 	result, err := stmt.Exec(album.Name, album.MaxHeight, album.MaxWidth, time, time)
 	if albumtmp, err := utils.PrettyStruct(album); err != nil {
@@ -47,6 +48,7 @@ func SelectAllAlbum() ([]model.Album, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 	albums := make([]model.Album, 0)
 	for rows.Next() {
 		var album model.Album

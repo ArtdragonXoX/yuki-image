@@ -36,6 +36,7 @@ func SelectFormat(id uint64) (model.Format, error) {
 	if err != nil {
 		return model.Format{}, err
 	}
+	defer stmt.Close()
 	var format model.Format
 	err = stmt.QueryRow(id).Scan(&format.Id, &format.Name)
 	if err != nil {
@@ -50,6 +51,7 @@ func SelectAllFormat() ([]model.Format, error) {
 	if err != nil {
 		return []model.Format{}, err
 	}
+	defer rows.Close()
 	formats := make([]model.Format, 0)
 	for rows.Next() {
 		var f model.Format

@@ -12,6 +12,7 @@ func InsertFormatSupport(format model.FormatSupport) error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 	_, err = stmt.Exec(format.FormatId, format.AlbumId)
 	if formattmp, err := utils.PrettyStruct(format); err != nil {
 		log.Println("Pretty struct err:", err)
@@ -41,5 +42,20 @@ func SelectFormatSupport(albumId uint64) ([]model.Format, error) {
 		}
 		formats = append(formats, format)
 	}
+	defer rows.Close()
 	return formats, nil
+}
+
+func DeleteFormatSupport(format model.FormatSupport) error {
+	sql := "DELETE FROM tbl_format_support WHERE format_id=? AND album_id=?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(format.FormatId, format.AlbumId)
+	if err != nil {
+		return err
+	}
+	return nil
 }

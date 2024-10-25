@@ -23,6 +23,8 @@ func InitAlbum() {
 		albumRoute.POST("/", InsertAlbum)
 		albumRoute.POST("/format", InsertFormatSupport)
 		albumRoute.GET("/format/:id", SelectFormatSupport)
+		albumRoute.DELETE("/format", DeleteFormatSupport)
+
 	}
 }
 
