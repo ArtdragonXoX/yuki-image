@@ -51,3 +51,32 @@ func SelectAllAlbum(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"album": albums}})
 }
+
+func InsertFormatSupport(ctx *gin.Context) {
+	var formatSupport model.FormatSupport
+	err := ctx.ShouldBindJSON(&formatSupport)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "参数错误"})
+		return
+	}
+	err = db.InsertFormatSupport(formatSupport)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "插入失败"})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "插入成功", Data: nil})
+}
+
+func SelectFormatSupport(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "参数错误"})
+		return
+	}
+	format_support, err := db.SelectFormatSupport(uint64(id))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败"})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"format_support": format_support}})
+}

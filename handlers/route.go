@@ -21,6 +21,8 @@ func InitAlbum() {
 		albumRoute.GET("/", SelectAllAlbum)
 		albumRoute.GET("/:id", SelectAlbum)
 		albumRoute.POST("/", InsertAlbum)
+		albumRoute.POST("/format", InsertFormatSupport)
+		albumRoute.GET("/format/:id", SelectFormatSupport)
 	}
 }
 
