@@ -39,11 +39,19 @@ func SelectAlbum(id uint64) (model.Album, error) {
 	sql := "SELECT * FROM tbl_album WHERE id = ?"
 	log.Println(sql, id)
 	err := db.QueryRow(sql, id).Scan(&album.Id, &album.Name, &album.MaxHeight, &album.MaxWidth, &album.UpdateTime, &album.CreateTime)
+	if err != nil {
+		return model.Album{}, err
+	}
+	format_support, err := SelectFormatSupport(album.Id)
+	if err != nil {
+		return model.Album{}, err
+	}
+	album.FormatSupport = format_support
 	return album, err
 }
 
 func SelectAllAlbum() ([]model.Album, error) {
-	sql := "SELECT * FROM tbl_album"
+	sql := "SELECT id FROM tbl_album"
 	rows, err := db.Query(sql)
 	if err != nil {
 		return nil, err
@@ -51,8 +59,12 @@ func SelectAllAlbum() ([]model.Album, error) {
 	defer rows.Close()
 	albums := make([]model.Album, 0)
 	for rows.Next() {
-		var album model.Album
-		err = rows.Scan(&album.Id, &album.Name, &album.MaxHeight, &album.MaxWidth, &album.UpdateTime, &album.CreateTime)
+		var id uint64
+		err = rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		album, err := SelectAlbum(id)
 		if err != nil {
 			return nil, err
 		}
