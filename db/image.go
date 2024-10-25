@@ -9,7 +9,6 @@ import (
 
 func InsertImage(image model.Image) error {
 	sql := "INSERT INTO tbl_image (id, name, url, album, pathname, origin_name, size, mimetype, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	// sql := "INSERT INTO tbl_image (key,name,url,album,pathname,origin_name,size,mimetype,time) VALUES (?,?,?,?,?,?,?,?,?)"
 	stmt, err := db.Prepare(sql)
 	if err != nil {
 		return err
