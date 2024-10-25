@@ -42,3 +42,12 @@ func SelectAlbum(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"album": album}})
 }
+
+func SelectAllAlbum(ctx *gin.Context) {
+	albums, err := db.SelectAllAlbum()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败"})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"album": albums}})
+}
