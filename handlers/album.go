@@ -25,5 +25,5 @@ func InsertAlbum(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 401, Msg: "插入失败"})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 201, Msg: "插入成功", Data: album})
+	ctx.JSON(http.StatusOK, model.Response{Code: 201, Msg: "插入成功", Data: gin.H{"album": album}})
 }
