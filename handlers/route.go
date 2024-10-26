@@ -45,5 +45,6 @@ func InitImage() {
 	{
 		imageRoute.POST("/", UploadImage)
 		imageRoute.GET("/:id", SelectImage)
+		imageRoute.DELETE("/:id", DeleteImage)
 	}
 }
