@@ -30,7 +30,7 @@ func InsertAlbum(ctx *gin.Context) {
 		return
 	}
 	pathname := fmt.Sprintf("%s/%s", conf.Conf.Server.Path, album.Name)
-	
+
 	err = utils.EnsureDir(pathname)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "创建目录失败", Data: gin.H{"error": err}})
@@ -125,4 +125,26 @@ func DeleteFormatSupport(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "删除成功", Data: nil})
+}
+
+func SelectImageFromAlbum(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("id"))
+	page, err := strconv.Atoi(ctx.Query("page"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "参数错误"})
+		return
+	}
+	upage := uint64(page)
+	size, err := strconv.Atoi(ctx.Query("size"))
+	if err != nil {
+		size = conf.Conf.Server.ImageListDefalutSize
+	}
+	usize := uint64(size)
+
+	imageList, err := db.SelectImageFromAlbum(uint64(id), upage, usize)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"image_list": imageList}})
 }

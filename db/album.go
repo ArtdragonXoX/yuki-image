@@ -75,6 +75,12 @@ func SelectAlbum(id uint64) (model.Album, error) {
 		return model.Album{}, err
 	}
 	album.FormatSupport = format_support
+	total, err := GetAlbumImageTotal(id)
+	if err != nil {
+		return album, err
+	}
+	album.Image = model.ImageList{Total: total}
+
 	return album, err
 }
 
@@ -99,4 +105,50 @@ func SelectAllAlbum() ([]model.Album, error) {
 		albums = append(albums, album)
 	}
 	return albums, nil
+}
+
+func SelectImageFromAlbum(albumId uint64, page uint64, size uint64) (model.ImageList, error) {
+	var images []model.Image
+	var imageList model.ImageList
+
+	sql := "SELECT id FROM tbl_image WHERE album_id = ? LIMIT ?,?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return model.ImageList{}, err
+	}
+	defer stmt.Close()
+	rowNum := (page - 1) * size
+	rows, err := stmt.Query(albumId, rowNum, size)
+	for rows.Next() {
+		var imageId string
+		err = rows.Scan(&imageId)
+		if err != nil {
+			return model.ImageList{}, err
+		}
+		image, err := SelectImage(imageId)
+		if err != nil {
+			return model.ImageList{}, err
+		}
+		images = append(images, image)
+	}
+	imageList.Image = images
+	imageList.Total, err = GetAlbumImageTotal(albumId)
+	if err != nil {
+		return model.ImageList{}, err
+	}
+	imageList.Page = page
+	imageList.Size = size
+	return imageList, err
+}
+
+func GetAlbumImageTotal(albumId uint64) (uint64, error) {
+	var count uint64
+	sql := "SELECT COUNT(*) FROM tbl_image WHERE album_id = ?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	err = stmt.QueryRow(albumId).Scan(&count)
+	return count, err
 }

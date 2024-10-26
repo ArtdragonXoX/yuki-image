@@ -38,5 +38,16 @@ func SelectImage(id string) (model.Image, error) {
 	defer stmt.Close()
 
 	err = stmt.QueryRow(id).Scan(&image.Id, &image.Name, &image.AlbumId, &image.Pathname, &image.OriginName, &image.Size, &image.Mimetype, &image.Time)
+	image.Url = utils.GetImageUrl(image)
 	return image, err
+}
+
+func DeleteImage(id string) error {
+	sql := "DELETE FROM tbl_image WHERE id = ?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(id)
+	return err
 }

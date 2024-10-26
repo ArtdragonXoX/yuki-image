@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"yuki-image/conf"
 	"yuki-image/db"
@@ -94,4 +95,47 @@ func UploadImage(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "文件上传成功", Data: gin.H{"image": image}})
+}
+
+func SelectImage(ctx *gin.Context) {
+	imageId := ctx.Param("id")
+	if imageId == "" {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "参数错误", Data: nil})
+		return
+	}
+	image, err := db.SelectImage(imageId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: image})
+}
+
+func DeleteImage(ctx *gin.Context) {
+	imageId := ctx.Param("id")
+	if imageId == "" {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "参数错误", Data: nil})
+		return
+	}
+	image, err := db.SelectImage(imageId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		return
+	}
+
+	err = db.DeleteImage(imageId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "删除失败", Data: gin.H{"error": err}})
+		return
+	}
+
+	pathname := fmt.Sprintf("%s/%s", conf.Conf.Server.Path, image.Pathname)
+	err = os.Remove(pathname)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "删除失败", Data: gin.H{"error": err}})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "删除成功", Data: nil})
 }

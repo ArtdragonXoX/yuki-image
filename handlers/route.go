@@ -28,6 +28,7 @@ func InitAlbum() {
 		albumRoute.GET("/format/:id", SelectFormatSupport)
 		albumRoute.DELETE("/format", DeleteFormatSupport)
 		albumRoute.POST("/:id", UpdateAlbum)
+		albumRoute.GET("/image/:id", SelectImageFromAlbum)
 	}
 }
 
@@ -43,5 +44,6 @@ func InitImage() {
 	imageRoute := api.Group("/image")
 	{
 		imageRoute.POST("/", UploadImage)
+		imageRoute.GET("/:id", SelectImage)
 	}
 }
