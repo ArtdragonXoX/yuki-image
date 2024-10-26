@@ -26,7 +26,7 @@ func InsertAlbum(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "插入失败"})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "插入成功", Data: gin.H{"album": album}})
+	ctx.JSON(http.StatusCreated, model.Response{Code: 1, Msg: "插入成功", Data: gin.H{"album": album}})
 }
 
 func SelectAlbum(ctx *gin.Context) {
@@ -64,7 +64,7 @@ func InsertFormatSupport(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "插入失败"})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "插入成功", Data: nil})
+	ctx.JSON(http.StatusCreated, model.Response{Code: 1, Msg: "插入成功", Data: nil})
 }
 
 func SelectFormatSupport(ctx *gin.Context) {

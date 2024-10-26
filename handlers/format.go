@@ -27,7 +27,7 @@ import (
 // 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 401, Msg: "插入失败"})
 // 		return
 // 	}
-// 	ctx.JSON(http.StatusOK, model.Response{Code: 201, Msg: "插入成功", Data: gin.H{"format": format}})
+// 	ctx.JSON(http.StatusCreated, model.Response{Code: 201, Msg: "插入成功", Data: gin.H{"format": format}})
 // }
 
 func SelectFormat(ctx *gin.Context) {
