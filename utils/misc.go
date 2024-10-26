@@ -9,3 +9,12 @@ func PrettyStruct(data interface{}) (string, error) {
 	}
 	return string(val), nil
 }
+
+func Contains[T comparable](arr []T, value T) bool {
+	for _, item := range arr {
+		if item == value {
+			return true
+		}
+	}
+	return false
+}

@@ -34,5 +34,4 @@ func ClearTmp(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "清理成功"})
-
 }
