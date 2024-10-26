@@ -1,6 +1,9 @@
 package utils
 
-import "os"
+import (
+	"os"
+	"path/filepath"
+)
 
 func EnsureDir(dir string) error {
 	// 检查文件夹是否存在
@@ -12,4 +15,36 @@ func EnsureDir(dir string) error {
 		}
 	}
 	return nil // 文件夹存在或创建成功
+}
+
+func GetDirSize(dir string) (uint64, error) {
+	var size int64
+	err := filepath.Walk(dir, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			size += info.Size()
+		}
+		return nil
+	})
+	return uint64(size), err
+}
+
+func GetFileCount(path string) (uint64, error) {
+	var count int64
+	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			count++
+		}
+		return nil
+	})
+	return uint64(count), err
+}
+
+func DeleteDir(dir string) error {
+	return os.RemoveAll(dir)
 }

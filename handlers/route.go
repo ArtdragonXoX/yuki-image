@@ -16,6 +16,7 @@ func InitRoute() {
 	InitAlbum()
 	InitFormat()
 	InitImage()
+	InitSystem()
 }
 
 func InitAlbum() {
@@ -46,5 +47,13 @@ func InitImage() {
 		imageRoute.POST("/", UploadImage)
 		imageRoute.GET("/:id", SelectImage)
 		imageRoute.DELETE("/:id", DeleteImage)
+	}
+}
+
+func InitSystem() {
+	systemRoute := api.Group("/system")
+	{
+		systemRoute.GET("/tmp", GetTmpInfo)
+		systemRoute.DELETE("/tmp", ClearTmp)
 	}
 }
