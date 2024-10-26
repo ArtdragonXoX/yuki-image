@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"yuki-image/conf"
+	"yuki-image/model"
 	"yuki-image/utils"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -36,7 +37,6 @@ func InitDataBase() error {
 	}
 
 	log.Println("Successfully connected to MySQL!")
-
 	err = CheckTable()
 	if err != nil {
 		log.Println("Error checking table!", err)
@@ -389,6 +389,9 @@ func CreateFormat() error {
 	if err != nil {
 		return err
 	}
+	InsertFormat(model.Format{Id: 1, Name: "jpeg"})
+	InsertFormat(model.Format{Id: 2, Name: "png"})
+	InsertFormat(model.Format{Id: 3, Name: "gif"})
 	return nil
 }
 
