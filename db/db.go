@@ -42,16 +42,15 @@ func InitDataBase() error {
 		log.Println("Error checking table!", err)
 		return err
 	}
-
 	return nil
 }
 
 func CheckTable() error {
-	err := CheckImage()
+	err := CheckAlbum()
 	if err != nil {
 		return err
 	}
-	err = CheckAlbum()
+	err = CheckImage()
 	if err != nil {
 		return err
 	}
@@ -63,46 +62,6 @@ func CheckTable() error {
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func CheckImage() error {
-	image := "tbl_image"
-	sql := fmt.Sprintf("SELECT 1 FROM information_schema.tables WHERE table_schema = '%s' AND table_name = '%s'", conf.Conf.DB.Name, image)
-	rows, err := db.Query(sql)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-	if !rows.Next() {
-		return errors.New(fmt.Sprintf("Table %s does not exist.\n", image))
-	}
-	id := "id"
-	name := "name"
-	album_id := "album_id"
-	pathname := "pathname"
-	origin_name := "origin_name"
-	size := "size"
-	mimetype := "mimetype"
-	time := "time"
-	var columns []string = []string{id, name, album_id, pathname, origin_name, size, mimetype, time}
-	sql = fmt.Sprintf("SELECT column_name FROM information_schema.columns WHERE table_schema = '%s' AND table_name = '%s'", conf.Conf.DB.Name, image)
-	rows, err = db.Query(sql)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var column string
-		err = rows.Scan(&column)
-		if err != nil {
-			return err
-		}
-		if !utils.Contains(columns, column) {
-			return errors.New(fmt.Sprintf("Table %s column %s does not exist.\n", image, column))
-		}
-	}
-
 	return nil
 }
 
@@ -132,6 +91,7 @@ func CheckAlbum() error {
 		return err
 	}
 	defer rows.Close()
+	exist := 0
 	for rows.Next() {
 		var column string
 		err = rows.Scan(&column)
@@ -139,10 +99,59 @@ func CheckAlbum() error {
 			return err
 		}
 		if !utils.Contains(columns, column) {
-			return errors.New(fmt.Sprintf("Table %s column %s does not exist.\n", album, column))
+			return errors.New(fmt.Sprintf("Table %s column %s is exist.\n", album, column))
 		}
+		exist++
 	}
 
+	if exist != len(columns) {
+		return errors.New(fmt.Sprintf("Table %s is not complete.\n", album))
+	}
+
+	return nil
+}
+
+func CheckImage() error {
+	image := "tbl_image"
+	sql := fmt.Sprintf("SELECT 1 FROM information_schema.tables WHERE table_schema = '%s' AND table_name = '%s'", conf.Conf.DB.Name, image)
+	rows, err := db.Query(sql)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return errors.New(fmt.Sprintf("Table %s is exist.\n", image))
+	}
+	id := "id"
+	name := "name"
+	album_id := "album_id"
+	pathname := "pathname"
+	origin_name := "origin_name"
+	size := "size"
+	mimetype := "mimetype"
+	time := "time"
+	var columns []string = []string{id, name, album_id, pathname, origin_name, size, mimetype, time}
+	sql = fmt.Sprintf("SELECT column_name FROM information_schema.columns WHERE table_schema = '%s' AND table_name = '%s'", conf.Conf.DB.Name, image)
+	rows, err = db.Query(sql)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	exist := 0
+	for rows.Next() {
+		var column string
+		err = rows.Scan(&column)
+		if err != nil {
+			return err
+		}
+		if !utils.Contains(columns, column) {
+			return errors.New(fmt.Sprintf("Table %s column %s is exist.\n", image, column))
+		}
+		exist++
+	}
+	if exist != len(columns) {
+		return errors.New(fmt.Sprintf("Table %s is not complete.\n", image))
+	}
 	return nil
 }
 
@@ -165,6 +174,7 @@ func CheckFormat() error {
 		return err
 	}
 	defer rows.Close()
+	exist := 0
 	for rows.Next() {
 		var column string
 		err = rows.Scan(&column)
@@ -172,10 +182,13 @@ func CheckFormat() error {
 			return err
 		}
 		if !utils.Contains(columns, column) {
-			return errors.New(fmt.Sprintf("Table %s column %s does not exist.\n", format, column))
+			return errors.New(fmt.Sprintf("Table %s column %s is exist.\n", format, column))
 		}
+		exist++
 	}
-
+	if exist != len(columns) {
+		return errors.New(fmt.Sprintf("Table %s is not complete.\n", format))
+	}
 	return nil
 }
 
@@ -198,6 +211,7 @@ func CheckFormatSupport() error {
 		return err
 	}
 	defer rows.Close()
+	exist := 0
 	for rows.Next() {
 		var column string
 		err = rows.Scan(&column)
@@ -205,9 +219,184 @@ func CheckFormatSupport() error {
 			return err
 		}
 		if !utils.Contains(columns, column) {
-			return errors.New(fmt.Sprintf("Table %s column %s does not exist.\n", format_support, column))
+			return errors.New(fmt.Sprintf("Table %s column %s is exist.\n", format_support, column))
 		}
+		exist++
 	}
+	if exist != len(columns) {
+		return errors.New(fmt.Sprintf("Table %s is not complete.\n", format_support))
+	}
+	return nil
+}
 
+func ResetTable() error {
+	err := DropAllTable()
+	if err != nil {
+		return err
+	}
+	err = CreateAllTable()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ResetAlbum() error {
+	err := DropAlbum()
+	if err != nil {
+		return err
+	}
+	err = CreateAlbum()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ResetImage() error {
+	err := DropImage()
+	if err != nil {
+		return err
+	}
+	err = CreateImage()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ResetFormat() error {
+	err := DropFormat()
+	if err != nil {
+		return err
+	}
+	err = CreateFormat()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ResetFormatSupport() error {
+	err := DropFormatSupport()
+	if err != nil {
+		return err
+	}
+	err = CreateFormatSupport()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DropAllTable() error {
+	err := DropFormatSupport()
+	if err != nil {
+		return err
+	}
+	err = DropImage()
+	if err != nil {
+		return err
+	}
+	err = DropAlbum()
+	if err != nil {
+		return err
+	}
+	err = DropFormat()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DropAlbum() error {
+	sql := fmt.Sprintf("DROP TABLE IF EXISTS %s.%s", conf.Conf.DB.Name, "tbl_album")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DropImage() error {
+	sql := fmt.Sprintf("DROP TABLE IF EXISTS %s.%s", conf.Conf.DB.Name, "tbl_image")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DropFormat() error {
+	sql := fmt.Sprintf("DROP TABLE IF EXISTS %s.%s", conf.Conf.DB.Name, "tbl_format")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DropFormatSupport() error {
+	sql := fmt.Sprintf("DROP TABLE IF EXISTS %s.%s", conf.Conf.DB.Name, "tbl_format_support")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CreateAllTable() error {
+	err := CreateAlbum()
+	if err != nil {
+		return err
+	}
+	err = CreateImage()
+	if err != nil {
+		return err
+	}
+	err = CreateFormat()
+	if err != nil {
+		return err
+	}
+	err = CreateFormatSupport()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CreateAlbum() error {
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, name VARCHAR(255) UNIQUE NOT NULL,max_height INT NOT NULL, max_width INT NOT NULL, update_time TIMESTAMP NOT NULL, create_time TIMESTAMP NOT NULL)", conf.Conf.DB.Name, "tbl_album")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CreateImage() error {
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (id VARCHAR(255) NOT NULL PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, album_id INT UNSIGNED NOT NULL, pathname VARCHAR(255) NOT NULL, origin_name VARCHAR(255) NOT NULL, size INT UNSIGNED NOT NULL,  mimetype VARCHAR(255) NOT NULL, time timestamp NOT NULL, FOREIGN KEY (album_id) REFERENCES %s(%s) ON DELETE CASCADE ON UPDATE CASCADE)", conf.Conf.DB.Name, "tbl_image", "tbl_album", "id")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CreateFormat() error {
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, name VARCHAR(255) UNIQUE NOT NULL)", conf.Conf.DB.Name, "tbl_format")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CreateFormatSupport() error {
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (format_id INT UNSIGNED NOT NULL, album_id INT UNSIGNED NOT NULL,PRIMARY KEY (format_id, album_id), FOREIGN KEY (format_id) REFERENCES %s(%s) ON DELETE CASCADE ON UPDATE CASCADE ,FOREIGN KEY (album_id) REFERENCES %s(%s) ON DELETE CASCADE ON UPDATE CASCADE)", conf.Conf.DB.Name, "tbl_format_support", "tbl_format", "id", "tbl_album", "id")
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
 	return nil
 }
