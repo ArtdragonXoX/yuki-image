@@ -34,6 +34,34 @@ func InsertAlbum(album model.Album) (uint64, error) {
 	return uint64(id), nil
 }
 
+func UpdateAlbum(album model.Album, id uint64) error {
+	sql := "UPDATE tbl_album SET name = ?,max_height = ?,max_width = ?,update_time=? WHERE id = ?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	album_, err := SelectAlbum(id)
+	if err != nil {
+		return err
+	}
+	if album.Name == "" {
+		album.Name = album_.Name
+	}
+	if album.MaxHeight == 0 {
+		album.MaxHeight = album_.MaxHeight
+	}
+	if album.MaxWidth == 0 {
+		album.MaxWidth = album_.MaxWidth
+	}
+	time := time.Now().Format("2006-01-02 15:04:05")
+	_, err = stmt.Exec(album.Name, album.MaxHeight, album.MaxWidth, time, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func SelectAlbum(id uint64) (model.Album, error) {
 	var album model.Album
 	sql := "SELECT * FROM tbl_album WHERE id = ?"
