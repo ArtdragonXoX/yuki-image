@@ -1,6 +1,7 @@
 server:
   port: 7415
   path: ./localimage
+  host: http://127.0.0.1:7415
   token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ
 db:
   host: 8.134.48.192

@@ -1,10 +1,13 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"yuki-image/conf"
 	"yuki-image/db"
 	"yuki-image/model"
+	"yuki-image/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +29,14 @@ func InsertAlbum(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "插入失败", Data: gin.H{"error": err}})
 		return
 	}
+	pathname := fmt.Sprintf("%s/%s", conf.Conf.Server.Path, album.Name)
+	
+	err = utils.EnsureDir(pathname)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "创建目录失败", Data: gin.H{"error": err}})
+		return
+	}
+
 	ctx.JSON(http.StatusCreated, model.Response{Code: 1, Msg: "插入成功", Data: gin.H{"album": album}})
 }
 

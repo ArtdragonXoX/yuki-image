@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/png"
 	"os"
+	"yuki-image/utils"
 )
 
 func ManipulatePNG(tmpPath string, path string, max_height int, max_width int) error {
@@ -29,7 +30,7 @@ func ManipulatePNG(tmpPath string, path string, max_height int, max_width int) e
 			width = max_width
 			height = int(float64(max_width) * float64(height) / float64(width))
 		}
-		img = image.NewRGBA(image.Rect(0, 0, width, height))
+		img = utils.ResizeImage(img, width, height)
 	}
 
 	outFile, err := os.Create(path)

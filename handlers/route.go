@@ -15,6 +15,7 @@ func InitRoute() {
 	api.Use(middlewares.TokenAuthMiddleware())
 	InitAlbum()
 	InitFormat()
+	InitImage()
 }
 
 func InitAlbum() {
@@ -35,5 +36,12 @@ func InitFormat() {
 	{
 		formatRoute.GET("/", SelectAllFormat)
 		formatRoute.GET("/:id", SelectFormat)
+	}
+}
+
+func InitImage() {
+	imageRoute := api.Group("/image")
+	{
+		imageRoute.POST("/", UploadImage)
 	}
 }

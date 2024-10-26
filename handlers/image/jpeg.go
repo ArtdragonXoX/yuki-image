@@ -3,7 +3,9 @@ package image
 import (
 	"image"
 	"image/jpeg"
+	"log"
 	"os"
+	"yuki-image/utils"
 )
 
 func ManipulateJPEG(tmpPath string, path string, max_height int, max_width int) error {
@@ -23,13 +25,15 @@ func ManipulateJPEG(tmpPath string, path string, max_height int, max_width int) 
 	height := bounds.Dy()
 	if width > max_width || height > max_height {
 		if height > max_height {
-			height = max_height
 			width = int(float64(max_height) * float64(width) / float64(height))
-		} else {
-			width = max_width
-			height = int(float64(max_width) * float64(height) / float64(width))
+			height = max_height
 		}
-		img = image.NewRGBA(image.Rect(0, 0, width, height))
+		if width > max_width {
+			height = int(float64(max_width) * float64(height) / float64(width))
+			width = max_width
+		}
+		img = utils.ResizeImage(img, width, height)
+		log.Println("resize", width, height)
 	}
 
 	outFile, err := os.Create(path)
