@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"yuki-image/conf"
+	"yuki-image/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +12,7 @@ var api *gin.RouterGroup
 func InitRoute() {
 	server.Static("/i", conf.Conf.Server.Path)
 	api = server.Group("/api/v1")
+	api.Use(middlewares.TokenAuthMiddleware())
 	InitAlbum()
 	InitFormat()
 }
