@@ -1,7 +1,7 @@
 server:
   port: 7415
-  path: ./localimage
-  host: http://127.0.0.1:7415
+  path: ./localimage          #图片本地存储路径
+  host: http://127.0.0.1:7415 #图片url前缀
   image_list_defalut_size: 10
   token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ
 db:
