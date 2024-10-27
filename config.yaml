@@ -12,4 +12,4 @@ db:
   password: yuki-image
   max_open_conns: 10
   max_idle_conns: 5
-  reset: true
+  reset: true                 #重置数据库标志
