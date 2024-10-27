@@ -1,6 +1,6 @@
 package utils
 
-import "yuki-image/model"
+import "yuki-image/internal/model"
 
 func ContainsFormatSupport(formatSupports []model.Format, format uint64) bool {
 	for _, v := range formatSupports {

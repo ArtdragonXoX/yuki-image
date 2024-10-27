@@ -8,8 +8,7 @@ import (
 	"log"
 	"os"
 	"time"
-	"yuki-image/conf"
-	"yuki-image/model"
+	"yuki-image/internal/model"
 
 	imgtype "github.com/shamsher31/goimgtype"
 	"golang.org/x/exp/rand"
@@ -17,6 +16,8 @@ import (
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+var BaseUrl string
 
 func GetImageFormatName(format uint64) string {
 	switch format {
@@ -66,7 +67,7 @@ func GetImageHash(file_name string) (string, error) {
 }
 
 func GetImageUrl(image model.Image) string {
-	return fmt.Sprintf("%s/i/%s", conf.Conf.Server.Host, image.Pathname)
+	return fmt.Sprintf("%s/i/%s", BaseUrl, image.Pathname)
 }
 
 func GetRandKey() string {

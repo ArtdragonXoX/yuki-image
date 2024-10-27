@@ -1,9 +1,7 @@
 package main
 
-import (
-	"yuki-image/bootstrap"
-)
+import "yuki-image/cmd"
 
 func main() {
-	bootstrap.InitServer()
+	cmd.Execute()
 }

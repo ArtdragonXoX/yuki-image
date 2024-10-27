@@ -33,9 +33,6 @@ go.work.sum
 # dist
 dist/
 
-tmp/
+/tmp/
 
-config.yaml
-
-
-localImage/
+/localImage/
