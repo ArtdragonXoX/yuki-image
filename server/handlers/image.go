@@ -34,7 +34,7 @@ func UploadImage(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "文件上传失败", Data: gin.H{"error": err}})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "文件上传成功", Data: gin.H{"image": image}})
+	ctx.JSON(http.StatusCreated, model.Response{Code: 1, Msg: "文件上传成功", Data: gin.H{"image": image}})
 }
 
 func SelectImage(ctx *gin.Context) {
