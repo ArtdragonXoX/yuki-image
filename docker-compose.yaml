@@ -2,10 +2,10 @@ version: '3'
 services:
     yuki-image:
         container_name: yuki-image
-        image: yuki-image
+        image: crpi-jg7reu90mmam5qch.cn-guangzhou.personal.cr.aliyuncs.com/artdragon/yuki-image
         restart: no
         volumes:
-            - ./config.yaml:/app/config.yaml:ro
+            - ./config.yaml:/app/config.yaml
             - ./data/tmp:/app/tmp
             - ./data/image:/app/localimage
         ports:
