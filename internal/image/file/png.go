@@ -3,6 +3,7 @@ package file
 import (
 	"image"
 	"image/png"
+	"log"
 	"os"
 	"yuki-image/utils"
 )
@@ -24,13 +25,15 @@ func ManipulatePNG(tmpPath string, path string, max_height int, max_width int) e
 	height := bounds.Dy()
 	if width > max_width || height > max_height {
 		if height > max_height {
-			height = max_height
 			width = int(float64(max_height) * float64(width) / float64(height))
-		} else {
-			width = max_width
+			height = max_height
+		}
+		if width > max_width {
 			height = int(float64(max_width) * float64(height) / float64(width))
+			width = max_width
 		}
 		img = utils.ResizeImage(img, width, height)
+		log.Println("resize", width, height)
 	}
 
 	outFile, err := os.Create(path)
