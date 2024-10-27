@@ -2,6 +2,10 @@ package bootstrap
 
 import "yuki-image/db"
 
-func InitDataBase() {
-	db.InitDataBase()
+func InitDataBase() error {
+	err := db.InitDataBase()
+	if err != nil {
+		return err
+	}
+	return nil
 }

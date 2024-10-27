@@ -13,6 +13,7 @@ func InitRoute() {
 	server.Static("/i", conf.Conf.Server.Path)
 	api = server.Group("/api/v1")
 	api.Use(middlewares.TokenAuthMiddleware())
+	api.Use(middlewares.PingDB())
 	InitAlbum()
 	InitFormat()
 	InitImage()

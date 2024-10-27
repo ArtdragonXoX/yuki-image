@@ -30,7 +30,7 @@ func InitDataBase() error {
 	db.SetMaxOpenConns(data.MaxConn)
 	//defer db.Close()
 
-	err = db.Ping()
+	err = Ping()
 	if err != nil {
 		log.Println("Error pinging the database!")
 		return err
@@ -43,6 +43,10 @@ func InitDataBase() error {
 		return err
 	}
 	return nil
+}
+
+func Ping() error {
+	return db.Ping()
 }
 
 func CheckTable() error {
