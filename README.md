@@ -9,20 +9,23 @@ https://apifox.com/apidoc/shared-666c1f43-0462-4b14-a115-7627ff0403bc
 ## 创建一个文件夹，在该文件夹内创建或下载文件config.yaml，内容为
 ```
 server:
-  port: 7415                  #服务端口号
-  path: ./localimage          #图片本地存储路径
-  host: http://127.0.0.1      #图片url前缀中的host
-  image_list_defalut_size: 10 #查询图片列表默认图片数量
-  token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ  #认证token，请替换为示例值
+    port: "7415"                                                            # 服务器端口
+    host: http://127.0.0.1                                                  # 服务器地址
+    token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ # 令牌
 db:
-  host: yuki-image-db    #mysql主机host
-  port: 3306             #mysql端口号
-  name: yuki_image_db    #mysql库名称
-  user: yuki-image       #mysql用户名
-  password: yuki-image   #mysql密码
-  max_open_conns: 10     #mysql最大连接数
-  max_idle_conns: 5      #mysql保持连接数
-  reset: true            #重置数据库标志
+    host: yuki-image-db                                                     # mysql地址
+    port: "3306"                                                            # mysql端口
+    name: yuki_image_db                                                     # mysql名称
+    user: yuki-image                                                        # mysql用户
+    password: yuki-image                                                    # mysql密码
+    max_open_conns: 10                                                      # 最大连接数
+    max_idle_conns: 5                                                       # 最大空闲连接数
+    reset: true                                                             # 是否重置数据库
+image:
+    max_size: 20                                                           # 图片最大大小(MB)
+    path: ./localimage                                                     # 图片存储路径
+    image_list_defalut_size: 10                                            # 图片列表默认大小
+    compression_quality: 6                                                 # 图片压缩质量(1-6, 1最低质量, 质量越低速度越快)
 ```
 ## 在release下载对应可执行文件在同一文件夹，执行
 ```
