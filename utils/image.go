@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"fmt"
 	"image"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -52,7 +51,7 @@ func GetImageFormat(file_name string) uint64 {
 }
 
 func GetImageHash(file_name string) (string, error) {
-	imageData, err := ioutil.ReadFile(file_name)
+	imageData, err := os.ReadFile(file_name)
 	if err != nil {
 		return "", err
 	}
