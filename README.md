@@ -25,14 +25,14 @@ db:
   reset: true            #重置数据库标志
 ```
 ## 在release下载对应可执行文件在同一文件夹，执行
-｀｀｀
+```
 ./可执行文件名 server
-｀｀｀
+```
 ------------
 # docker compose部署
 ## 在release下载docker部署压缩包并解压，包含config.yaml和docker-compose.yml
 docker-compose.yml文件内容：
-｀｀｀
+```
 version: '3'
 services:
     yuki-image:
@@ -57,8 +57,8 @@ services:
           - MYSQL_ROOT_PASSWORD=yuki-image
         volumes:
           - ./data/db:/var/lib/mysql
-｀｀｀
+```
 ## 执行
-｀｀｀
+```
 docker-compose -p yuki-image up -d
-｀｀｀
+```
