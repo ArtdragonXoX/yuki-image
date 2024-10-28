@@ -2,7 +2,6 @@ package image
 
 import (
 	"fmt"
-	"regexp"
 	"yuki-image/internal/conf"
 	"yuki-image/internal/db"
 	"yuki-image/internal/image/file"
@@ -10,7 +9,7 @@ import (
 	"yuki-image/utils"
 )
 
-func Upload(tmpPath string, albumId uint64) (model.Image, error) {
+func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 	format := utils.GetImageFormat(tmpPath)
 	album, err := db.SelectAlbum(albumId)
 	if err != nil {
@@ -37,15 +36,12 @@ func Upload(tmpPath string, albumId uint64) (model.Image, error) {
 		return model.Image{}, err
 	}
 
-	re := regexp.MustCompile(`[^/]+$`)
-	filename := re.FindString(tmpPath)
-
 	image := model.Image{
 		Id:         utils.GetRandKey(),
 		Name:       newFileName,
 		AlbumId:    albumId,
 		Pathname:   newFilePath,
-		OriginName: filename,
+		OriginName: oname,
 		Size:       size,
 		Mimetype:   utils.GetImageFormatName(format),
 	}

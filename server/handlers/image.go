@@ -6,6 +6,7 @@ import (
 	"strconv"
 	iimage "yuki-image/internal/image"
 	"yuki-image/internal/model"
+	"yuki-image/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,12 +25,12 @@ func UploadImage(ctx *gin.Context) {
 		return
 	}
 
-	dst := fmt.Sprintf("tmp/%s", file.Filename)
+	dst := fmt.Sprintf("tmp/%s", utils.GetRandKey())
 	if err := ctx.SaveUploadedFile(file, dst); err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "文件上传失败", Data: gin.H{"error": err}})
 		return
 	}
-	image, err := iimage.Upload(dst, album_uid)
+	image, err := iimage.Upload(dst, file.Filename, album_uid)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "文件上传失败", Data: gin.H{"error": err}})
 		return

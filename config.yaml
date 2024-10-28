@@ -1,15 +1,15 @@
-server:
-  port: 7415
-  path: ./localimage          #图片本地存储路径
-  host: http://127.0.0.1      #图片url前缀中的host
-  image_list_defalut_size: 10
-  token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ
 db:
-  host: yuki-image-db
-  port: 3306
-  name: yuki_image_db
-  user: yuki-image
-  password: yuki-image
-  max_open_conns: 10
-  max_idle_conns: 5
-  reset: true                 #重置数据库标志
+    host: yuki-image-db
+    port: "3306"
+    name: yuki_image_db
+    user: yuki-image
+    password: yuki-image
+    max_open_conns: 10
+    max_idle_conns: 5
+    reset: false
+server:
+    port: "7415"
+    path: ./localimage
+    host: http://127.0.0.1
+    image_list_defalut_size: 10
+    token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ

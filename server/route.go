@@ -37,9 +37,9 @@ func InitRoute(server *gin.Engine) {
 func InitAlbum(api *gin.RouterGroup) {
 	albumRoute := api.Group("/album")
 	{
-		albumRoute.GET("/", handlers.SelectAllAlbum)
+		albumRoute.GET("", handlers.SelectAllAlbum)
 		albumRoute.GET("/:id", handlers.SelectAlbum)
-		albumRoute.POST("/", handlers.InsertAlbum)
+		albumRoute.POST("", handlers.InsertAlbum)
 		albumRoute.POST("/format", handlers.InsertFormatSupport)
 		albumRoute.GET("/format/:id", handlers.SelectFormatSupport)
 		albumRoute.DELETE("/format", handlers.DeleteFormatSupport)
@@ -51,7 +51,7 @@ func InitAlbum(api *gin.RouterGroup) {
 func InitFormat(api *gin.RouterGroup) {
 	formatRoute := api.Group("/format")
 	{
-		formatRoute.GET("/", handlers.SelectAllFormat)
+		formatRoute.GET("", handlers.SelectAllFormat)
 		formatRoute.GET("/:id", handlers.SelectFormat)
 	}
 }
@@ -59,7 +59,7 @@ func InitFormat(api *gin.RouterGroup) {
 func InitImage(api *gin.RouterGroup) {
 	imageRoute := api.Group("/image")
 	{
-		imageRoute.POST("/", handlers.UploadImage)
+		imageRoute.POST("", handlers.UploadImage)
 		imageRoute.GET("/:id", handlers.SelectImage)
 		imageRoute.DELETE("/:id", handlers.DeleteImage)
 	}
