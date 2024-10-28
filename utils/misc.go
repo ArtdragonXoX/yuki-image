@@ -1,6 +1,11 @@
 package utils
 
-import "encoding/json"
+import (
+	"crypto/md5"
+	"encoding/json"
+	"fmt"
+	"time"
+)
 
 func PrettyStruct(data interface{}) (string, error) {
 	val, err := json.MarshalIndent(data, "", " ")
@@ -17,4 +22,14 @@ func Contains[T comparable](arr []T, value T) bool {
 		}
 	}
 	return false
+}
+
+func GetByteHash(buff []byte) (string, error) {
+	timestamp := time.Now().UnixNano()
+	timestampBytes := []byte(fmt.Sprintf("%d", timestamp))
+
+	dataTOHash := append(buff, timestampBytes...)
+	hash := md5.Sum(dataTOHash)
+	hashHex := fmt.Sprintf("%x", hash)
+	return hashHex, nil
 }

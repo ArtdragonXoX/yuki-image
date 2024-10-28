@@ -1,15 +1,16 @@
 package utils
 
 import (
-	"crypto/md5"
 	"fmt"
 	"image"
 	"log"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 	"yuki-image/internal/model"
 
-	imgtype "github.com/shamsher31/goimgtype"
+	imgext "github.com/shamsher31/goimgext"
 	"golang.org/x/exp/rand"
 	"golang.org/x/image/draw"
 )
@@ -32,11 +33,20 @@ func GetImageFormatName(format uint64) string {
 	}
 }
 
-func GetImageFormat(file_name string) uint64 {
-	datatype, err := imgtype.Get(file_name)
-	if err != nil {
-		return 0
+func GetImageFormat(buff []byte) uint64 {
+	filetype := http.DetectContentType(buff)
+
+	ext := imgext.Get()
+
+	var datatype string
+
+	for i := 0; i < len(ext); i++ {
+		if strings.Contains(ext[i], filetype[6:len(filetype)]) {
+			datatype = filetype
+			break
+		}
 	}
+
 	log.Println(datatype)
 	switch datatype {
 	case `image/jpeg`:
@@ -48,21 +58,6 @@ func GetImageFormat(file_name string) uint64 {
 	default:
 		return 0
 	}
-}
-
-func GetImageHash(file_name string) (string, error) {
-	imageData, err := os.ReadFile(file_name)
-	if err != nil {
-		return "", err
-	}
-
-	timestamp := time.Now().UnixNano()
-	timestampBytes := []byte(fmt.Sprintf("%d", timestamp))
-
-	dataTOHash := append(imageData, timestampBytes...)
-	hash := md5.Sum(dataTOHash)
-	hashHex := fmt.Sprintf("%x", hash)
-	return hashHex, nil
 }
 
 func GetImageUrl(image model.Image) string {

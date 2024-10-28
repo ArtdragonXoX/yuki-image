@@ -2,35 +2,58 @@ package image
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"yuki-image/internal/conf"
 	"yuki-image/internal/db"
-	"yuki-image/internal/image/file"
+	imageio "yuki-image/internal/image/file"
 	"yuki-image/internal/model"
 	"yuki-image/utils"
 )
 
 func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
-	format := utils.GetImageFormat(tmpPath)
+	file, err := os.Open(tmpPath)
+	if err != nil {
+		return model.Image{}, err
+	}
+	buff := make([]byte, 512)
+
+	_, err = file.Read(buff)
+	if err != nil {
+		return model.Image{}, err
+	}
+
+	format := utils.GetImageFormat(buff)
 	album, err := db.SelectAlbum(albumId)
 	if err != nil {
 		return model.Image{}, err
 	}
-	hash, err := utils.GetImageHash(tmpPath)
+	hash, err := utils.GetByteHash(buff)
 	if err != nil {
 		return model.Image{}, err
 	}
 	newFileName := fmt.Sprintf("%s.%s", hash, utils.GetImageFormatName(format))
 	newFilePath := fmt.Sprintf("%s/%s", album.Name, newFileName)
 	localFilePath := fmt.Sprintf("%s/%s", conf.Conf.Server.Path, newFilePath)
+
 	switch format {
 	case model.JPEG:
-		file.ManipulateJPEG(tmpPath, localFilePath, int(album.MaxHeight), int(album.MaxWidth))
+		err = imageio.ManipulateJPEG(tmpPath, localFilePath, int(album.MaxHeight), int(album.MaxWidth))
 	case model.PNG:
-		file.ManipulatePNG(tmpPath, localFilePath, int(album.MaxHeight), int(album.MaxWidth))
+		err = imageio.ManipulatePNG(tmpPath, localFilePath, int(album.MaxHeight), int(album.MaxWidth))
 	case model.GIF:
-		file.ManipulateGIF(tmpPath, localFilePath, int(album.MaxHeight), int(album.MaxWidth))
+		err = imageio.ManipulateGIF(tmpPath, localFilePath, int(album.MaxHeight), int(album.MaxWidth))
 	default:
 	}
+	if err != nil {
+		log.Println(err)
+		return model.Image{}, err
+	}
+	err = os.Remove(tmpPath)
+	if err != nil {
+		return model.Image{}, err
+	}
+
 	size, err := utils.GetImageSize(localFilePath)
 	if err != nil {
 		return model.Image{}, err
