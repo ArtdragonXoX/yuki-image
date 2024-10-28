@@ -24,7 +24,8 @@ func New() *gin.Engine {
 }
 
 func InitRoute(server *gin.Engine) {
-	server.Static("/i", conf.Conf.Server.Path)
+	server.Static("/i", conf.Conf.Image.Path)
+	server.MaxMultipartMemory = int64(conf.Conf.Image.MaxSize) << 20
 	api := server.Group("/api/v1")
 	api.Use(middlewares.TokenAuthMiddleware())
 	api.Use(middlewares.PingDB())

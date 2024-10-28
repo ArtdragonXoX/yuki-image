@@ -10,7 +10,7 @@ func InitFile() error {
 	if err != nil {
 		return err
 	}
-	err = utils.EnsureDir(conf.Conf.Server.Path)
+	err = utils.EnsureDir(conf.Conf.Image.Path)
 	if err != nil {
 		return err
 	}

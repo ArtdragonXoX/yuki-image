@@ -8,6 +8,7 @@ import (
 type Config struct {
 	DB     DatabaseConf `yaml:"db"`
 	Server ServerConf   `yaml:"server"`
+	Image  ImageConf    `yaml:"image"`
 }
 
 var Conf = &Config{}

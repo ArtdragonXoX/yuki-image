@@ -128,7 +128,7 @@ func SelectImageFromAlbum(ctx *gin.Context) {
 	upage := uint64(page)
 	size, err := strconv.Atoi(ctx.Query("size"))
 	if err != nil {
-		size = conf.Conf.Server.ImageListDefalutSize
+		size = conf.Conf.Image.ImageListDefalutSize
 	}
 	usize := uint64(size)
 

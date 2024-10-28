@@ -1,21 +1,15 @@
 package file
 
 import (
-	"image"
-	"image/gif"
 	"log"
-	"os"
+	"yuki-image/internal/conf"
 	"yuki-image/utils"
+
+	"github.com/disintegration/imaging"
 )
 
 func ManipulateGIF(tmpPath string, path string, max_height int, max_width int) error {
-	file, err := os.Open(tmpPath)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	img, _, err := image.Decode(file)
+	img, err := imaging.Open(tmpPath)
 	if err != nil {
 		return err
 	}
@@ -32,19 +26,14 @@ func ManipulateGIF(tmpPath string, path string, max_height int, max_width int) e
 			height = int(float64(max_width) * float64(height) / float64(width))
 			width = max_width
 		}
-		img = utils.ResizeImage(img, width, height)
+		img = imaging.Resize(img, width, height, utils.GetResampleFilter(conf.Conf.Image.CompressionQuality))
 		log.Println("resize", width, height)
 	}
 
-	outFile, err := os.Create(path)
+	err = imaging.Save(img, path)
+	if err != nil {
+		return err
+	}
 
-	if err != nil {
-		return err
-	}
-	defer outFile.Close()
-	err = gif.Encode(outFile, img, nil)
-	if err != nil {
-		return err
-	}
 	return nil
 }

@@ -13,7 +13,7 @@ func Insert(album model.Album) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	pathname := fmt.Sprintf("%s/%s", conf.Conf.Server.Path, album.Name)
+	pathname := fmt.Sprintf("%s/%s", conf.Conf.Image.Path, album.Name)
 	err = utils.EnsureDir(pathname)
 	if err != nil {
 		return 0, err

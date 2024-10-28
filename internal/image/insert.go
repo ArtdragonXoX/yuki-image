@@ -35,7 +35,7 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 	}
 	newFileName := fmt.Sprintf("%s.%s", hash, utils.GetImageFormatName(format))
 	newFilePath := fmt.Sprintf("%s/%s", album.Name, newFileName)
-	localFilePath := fmt.Sprintf("%s/%s", conf.Conf.Server.Path, newFilePath)
+	localFilePath := fmt.Sprintf("%s/%s", conf.Conf.Image.Path, newFilePath)
 
 	switch format {
 	case model.JPEG:

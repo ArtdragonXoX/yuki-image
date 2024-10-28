@@ -16,7 +16,7 @@ func Delete(id string) error {
 	if err != nil {
 		return err
 	}
-	pathname := fmt.Sprintf("%s/%s", conf.Conf.Server.Path, image.Pathname)
+	pathname := fmt.Sprintf("%s/%s", conf.Conf.Image.Path, image.Pathname)
 	err = os.Remove(pathname)
 	return err
 }
