@@ -51,7 +51,7 @@ func SelectAlbum(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Query("id"))
 	idHasValue := err == nil && id > 0
 	name := ctx.Query("name")
-	nameHasValue := err == nil
+	nameHasValue := name != ""
 	if !idHasValue && !nameHasValue {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
 		return
@@ -97,7 +97,7 @@ func SelectFormatSupport(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Query("id"))
 	idHasValue := err == nil && id > 0
 	name := ctx.Query("name")
-	nameHasValue := err == nil
+	nameHasValue := name != ""
 	if !idHasValue && !nameHasValue {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
 		return
@@ -119,7 +119,7 @@ func SelectImageFromAlbum(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Query("id"))
 	idHasValue := err == nil && id > 0
 	name := ctx.Query("name")
-	nameHasValue := err == nil
+	nameHasValue := name != ""
 	if !idHasValue && !nameHasValue {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
 		return

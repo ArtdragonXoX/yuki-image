@@ -50,7 +50,7 @@ func DeleteFormatSupport(formatSupport model.FormatSupport) error {
 }
 
 func SelectFormatSupportFromName(name string) ([]model.Format, error) {
-	id, err := db.SelectAlbumIdFromName(name)
+	id, err := SelectIdFromName(name)
 	if err != nil {
 		return nil, err
 	}

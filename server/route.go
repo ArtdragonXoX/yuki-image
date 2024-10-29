@@ -38,14 +38,14 @@ func InitRoute(server *gin.Engine) {
 func InitAlbum(api *gin.RouterGroup) {
 	albumRoute := api.Group("/album")
 	{
-		albumRoute.GET("", handlers.SelectAllAlbum)
-		albumRoute.GET("/:id", handlers.SelectAlbum)
+		albumRoute.GET("/all", handlers.SelectAllAlbum)
+		albumRoute.GET("", handlers.SelectAlbum)
 		albumRoute.POST("", handlers.InsertAlbum)
 		albumRoute.POST("/format", handlers.InsertFormatSupport)
-		albumRoute.GET("/format/:id", handlers.SelectFormatSupport)
+		albumRoute.GET("/format", handlers.SelectFormatSupport)
 		albumRoute.DELETE("/format", handlers.DeleteFormatSupport)
-		albumRoute.POST("/:id", handlers.UpdateAlbum)
-		albumRoute.GET("/image/:id", handlers.SelectImageFromAlbum)
+		albumRoute.PUT("", handlers.UpdateAlbum)
+		albumRoute.GET("/image", handlers.SelectImageFromAlbum)
 	}
 }
 
