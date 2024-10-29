@@ -24,11 +24,11 @@ func InsertAlbum(ctx *gin.Context) {
 	}
 	album, err = ialbum.Select(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Insert Failure", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Insert Failure", Data: err})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, model.Response{Code: 1, Msg: "插入成功", Data: gin.H{"album": album}})
+	ctx.JSON(http.StatusCreated, model.Response{Code: 1, Msg: "插入成功", Data: album})
 }
 
 func UpdateAlbum(ctx *gin.Context) {
@@ -45,7 +45,7 @@ func UpdateAlbum(ctx *gin.Context) {
 	}
 	err = ialbum.Update(album, uint64(id))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "更新失败", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "更新失败", Data: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "更新成功", Data: nil})
@@ -59,19 +59,19 @@ func SelectAlbum(ctx *gin.Context) {
 	}
 	album, err := ialbum.Select(uint64(id))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"album": album}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: album})
 }
 
 func SelectAllAlbum(ctx *gin.Context) {
 	albums, err := ialbum.SelectAll()
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"album": albums}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: albums})
 }
 
 func InsertFormatSupport(ctx *gin.Context) {
@@ -83,7 +83,7 @@ func InsertFormatSupport(ctx *gin.Context) {
 	}
 	err = ialbum.InsertFormatSupport(formatSupport)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Insert Failure", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Insert Failure", Data: err})
 		return
 	}
 	ctx.JSON(http.StatusCreated, model.Response{Code: 1, Msg: "插入成功", Data: nil})
@@ -97,10 +97,10 @@ func SelectFormatSupport(ctx *gin.Context) {
 	}
 	format_support, err := ialbum.SelectFormatSupport(uint64(id))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"format_support": format_support}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: format_support})
 }
 
 func DeleteFormatSupport(ctx *gin.Context) {
@@ -112,7 +112,7 @@ func DeleteFormatSupport(ctx *gin.Context) {
 	}
 	err = ialbum.DeleteFormatSupport(formatSupport)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "删除失败", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "删除失败", Data: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "删除成功", Data: nil})
@@ -134,8 +134,8 @@ func SelectImageFromAlbum(ctx *gin.Context) {
 
 	imageList, err := ialbum.SelectImage(uint64(id), upage, usize)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"image_list": imageList}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: imageList})
 }

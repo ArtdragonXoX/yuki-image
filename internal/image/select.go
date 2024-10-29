@@ -11,7 +11,7 @@ func Select(id string) (model.Image, error) {
 }
 
 func SelectFromUrl(url string) (model.Image, error) {
-	pattern := "[\u4e00-\u9fa5a-zA-Z0-9]+/[a-zA-Z0-9]+.[a-zA-Z0-9]+$"
+	pattern := "[\u4e00-\u9fa5a-zA-Z0-9]+/[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$"
 	match := regexp.MustCompile(pattern).FindString(url)
 	id, err := db.SelectImageIdFromPath(match)
 	if err != nil {

@@ -27,7 +27,7 @@ import (
 // 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 401, Msg: "Insert Failure"})
 // 		return
 // 	}
-// 	ctx.JSON(http.StatusCreated, model.Response{Code: 201, Msg: "插入成功", Data: gin.H{"format": format}})
+// 	ctx.JSON(http.StatusCreated, model.Response{Code: 201, Msg: "插入成功", Data: format})
 // }
 
 func SelectFormat(ctx *gin.Context) {
@@ -38,7 +38,7 @@ func SelectFormat(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败"})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"format": format}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: format})
 }
 
 func SelectAllFormat(ctx *gin.Context) {
@@ -47,5 +47,5 @@ func SelectAllFormat(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败"})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"formats": formats}})
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: formats})
 }
