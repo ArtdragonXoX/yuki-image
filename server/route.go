@@ -63,6 +63,7 @@ func InitImage(api *gin.RouterGroup) {
 		imageRoute.POST("", handlers.UploadImage)
 		imageRoute.GET("/:id", handlers.SelectImage)
 		imageRoute.DELETE("/:id", handlers.DeleteImage)
+		imageRoute.GET("", handlers.SelectImageFromUrl)
 	}
 }
 

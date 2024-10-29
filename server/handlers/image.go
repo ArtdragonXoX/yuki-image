@@ -52,6 +52,20 @@ func SelectImage(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: image})
 }
 
+func SelectImageFromUrl(ctx *gin.Context) {
+	url := ctx.Query("url")
+	if url == "" {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error", Data: nil})
+		return
+	}
+	image, err := iimage.SelectFromUrl(url)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: gin.H{"error": err}})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: gin.H{"image": image}})
+}
+
 func DeleteImage(ctx *gin.Context) {
 	imageId := ctx.Param("id")
 	if imageId == "" {

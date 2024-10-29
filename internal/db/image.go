@@ -42,6 +42,17 @@ func SelectImage(id string) (model.Image, error) {
 	return image, err
 }
 
+func SelectImageIdFromPath(pathname string) (string, error) {
+	sql := "SELECT id FROM tbl_image WHERE pathname = ?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return "", err
+	}
+	defer stmt.Close()
+	var id string
+	err = stmt.QueryRow(pathname).Scan(&id)
+	return id, err
+}
 func DeleteImage(id string) error {
 	sql := "DELETE FROM tbl_image WHERE id = ?"
 	stmt, err := db.Prepare(sql)
