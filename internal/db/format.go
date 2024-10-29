@@ -45,6 +45,29 @@ func SelectFormat(id uint64) (model.Format, error) {
 	return format, nil
 }
 
+func SelectFromatIdFromName(name string) (uint64, error) {
+	sql := "SELECT id FROM tbl_format WHERE name=?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	var formatId uint64
+	err = stmt.QueryRow(name).Scan(&formatId)
+	if err != nil {
+		return 0, err
+	}
+	return formatId, nil
+}
+
+func SelectFromatFromName(name string) (model.Format, error) {
+	id, err := SelectFromatIdFromName(name)
+	if err != nil {
+		return model.Format{}, err
+	}
+	return SelectFormat(id)
+}
+
 func SelectAllFormat() ([]model.Format, error) {
 	sql := "SELECT * FROM tbl_format"
 	rows, err := db.Query(sql)

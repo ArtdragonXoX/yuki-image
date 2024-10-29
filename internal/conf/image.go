@@ -5,4 +5,5 @@ type ImageConf struct {
 	Path                 string `yaml:"path"`
 	ImageListDefalutSize int    `yaml:"image_list_defalut_size"`
 	CompressionQuality   int    `yaml:"compression_quality"`
+	Url                  string `yaml:"url"`
 }

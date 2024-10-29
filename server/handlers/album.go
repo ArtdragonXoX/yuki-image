@@ -38,12 +38,8 @@ func UpdateAlbum(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "JSON error"})
 		return
 	}
-	id, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "JSON error"})
-		return
-	}
-	err = ialbum.Update(album, uint64(id))
+
+	err = ialbum.Update(album)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "更新失败", Data: err})
 		return
@@ -52,12 +48,20 @@ func UpdateAlbum(ctx *gin.Context) {
 }
 
 func SelectAlbum(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "JSON error"})
+	id, err := strconv.Atoi(ctx.Query("id"))
+	idHasValue := err == nil && id > 0
+	name := ctx.Query("name")
+	nameHasValue := err == nil
+	if !idHasValue && !nameHasValue {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
 		return
 	}
-	album, err := ialbum.Select(uint64(id))
+	var album model.Album
+	if !idHasValue {
+		album, err = ialbum.SelectFromName(name)
+	} else {
+		album, err = ialbum.Select(uint64(id))
+	}
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
 		return
@@ -90,17 +94,58 @@ func InsertFormatSupport(ctx *gin.Context) {
 }
 
 func SelectFormatSupport(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "JSON error"})
+	id, err := strconv.Atoi(ctx.Query("id"))
+	idHasValue := err == nil && id > 0
+	name := ctx.Query("name")
+	nameHasValue := err == nil
+	if !idHasValue && !nameHasValue {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
 		return
 	}
-	format_support, err := ialbum.SelectFormatSupport(uint64(id))
+	var format_support []model.Format
+	if !idHasValue {
+		format_support, err = ialbum.SelectFormatSupportFromName(name)
+	} else {
+		format_support, err = ialbum.SelectFormatSupport(uint64(id))
+	}
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: format_support})
+}
+
+func SelectImageFromAlbum(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Query("id"))
+	idHasValue := err == nil && id > 0
+	name := ctx.Query("name")
+	nameHasValue := err == nil
+	if !idHasValue && !nameHasValue {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
+		return
+	}
+	page, err := strconv.Atoi(ctx.Query("page"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
+		return
+	}
+	upage := uint64(page)
+	size, err := strconv.Atoi(ctx.Query("size"))
+	if err != nil {
+		size = conf.Conf.Image.ImageListDefalutSize
+	}
+	usize := uint64(size)
+	var imageList model.ImageList
+	if !idHasValue {
+		imageList, err = ialbum.SelectImageFromName(name, upage, usize)
+	} else {
+		imageList, err = ialbum.SelectImage(uint64(id), upage, usize)
+	}
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: imageList})
 }
 
 func DeleteFormatSupport(ctx *gin.Context) {
@@ -116,26 +161,4 @@ func DeleteFormatSupport(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "删除成功", Data: nil})
-}
-
-func SelectImageFromAlbum(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
-	page, err := strconv.Atoi(ctx.Query("page"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "JSON error"})
-		return
-	}
-	upage := uint64(page)
-	size, err := strconv.Atoi(ctx.Query("size"))
-	if err != nil {
-		size = conf.Conf.Image.ImageListDefalutSize
-	}
-	usize := uint64(size)
-
-	imageList, err := ialbum.SelectImage(uint64(id), upage, usize)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
-		return
-	}
-	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: imageList})
 }

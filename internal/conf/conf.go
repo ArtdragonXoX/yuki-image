@@ -18,7 +18,7 @@ func InitConfig() error {
 	if err != nil {
 		return err
 	}
-	utils.BaseUrl = fmt.Sprintf("%s:%s", Conf.Server.Host, Conf.Server.Port)
+	utils.BaseUrl = fmt.Sprintf("%s", Conf.Image.Url)
 	return nil
 }
 

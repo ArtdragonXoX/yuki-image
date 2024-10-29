@@ -84,6 +84,24 @@ func SelectAlbum(id uint64) (model.Album, error) {
 	return album, err
 }
 
+func SelectAlbumFromName(name string) (model.Album, error) {
+	albumId, err := SelectAlbumIdFromName(name)
+	if err != nil {
+		return model.Album{}, err
+	}
+	return SelectAlbum(albumId)
+}
+
+func SelectAlbumIdFromName(name string) (uint64, error) {
+	var albumId uint64
+	sql := "SELECT id FROM tbl_album WHERE name = ?"
+	err := db.QueryRow(sql, name).Scan(&albumId)
+	if err != nil {
+		return 0, err
+	}
+	return albumId, nil
+}
+
 func SelectAllAlbum() ([]model.Album, error) {
 	sql := "SELECT id FROM tbl_album"
 	rows, err := db.Query(sql)
