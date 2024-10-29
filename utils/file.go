@@ -3,7 +3,38 @@ package utils
 import (
 	"os"
 	"path/filepath"
+	"sync"
 )
+
+var fileCounter = make(map[uint64]uint64)
+var fileMutexMap = make(map[uint64]*sync.Mutex)
+
+func AddFileCounter(id uint64) {
+	if _, ok := fileMutexMap[id]; !ok {
+		fileMutexMap[id] = &sync.Mutex{} // 初始化新的互斥锁
+	}
+	fileMutexMap[id].Lock()
+	defer fileMutexMap[id].Unlock()
+	fileCounter[id]++
+}
+
+func SubFileCounter(id uint64) {
+	if _, ok := fileMutexMap[id]; !ok {
+		fileMutexMap[id] = &sync.Mutex{} // 初始化新的互斥锁
+	}
+	fileMutexMap[id].Lock()
+	defer fileMutexMap[id].Unlock()
+	fileCounter[id]--
+}
+
+func GetFileCounter(id uint64) uint64 {
+	if _, ok := fileMutexMap[id]; !ok {
+		fileMutexMap[id] = &sync.Mutex{} // 初始化新的互斥锁
+	}
+	fileMutexMap[id].Lock()
+	defer fileMutexMap[id].Unlock()
+	return fileCounter[id]
+}
 
 func EnsureDir(dir string) error {
 	// 检查文件夹是否存在
