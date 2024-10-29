@@ -2,7 +2,7 @@
 ## 一个简易的使用本地存储的图床服务
 ----------
 # API文档
-https://apifox.com/apidoc/shared-666c1f43-0462-4b14-a115-7627ff0403bc
+https://apifox.com/apidoc/shared-62b5e13f-632a-4e0a-9e4a-cde4f293e29a
 ----------
 # 可执行文件部署
 ## 注意：需要mysql
