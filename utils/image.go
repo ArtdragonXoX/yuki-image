@@ -7,16 +7,12 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 	"yuki-image/internal/model"
 
 	"github.com/disintegration/imaging"
 	imgext "github.com/shamsher31/goimgext"
-	"golang.org/x/exp/rand"
 	"golang.org/x/image/draw"
 )
-
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
 var BaseUrl string
 
@@ -59,15 +55,6 @@ func GetImageFormat(buff []byte) uint64 {
 
 func GetImageUrl(image model.Image) string {
 	return fmt.Sprintf("%s/i/%s", BaseUrl, image.Pathname)
-}
-
-func GetRandKey() string {
-	rand.Seed(uint64(time.Now().UnixNano()))
-	key := make([]rune, 6)
-	for i := range key {
-		key[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(key)
 }
 
 func GetImageSize(filepath string) (uint64, error) {

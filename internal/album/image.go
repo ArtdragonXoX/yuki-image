@@ -14,7 +14,7 @@ func SelectImageFromName(name string, page uint64, size uint64) (model.ImageList
 	if err != nil {
 		return model.ImageList{}, err
 	}
-	return db.SelectImageFromAlbum(id, page, size)
+	return SelectImage(id, page, size)
 }
 
 func GetImageTotal(id uint64) (uint64, error) {

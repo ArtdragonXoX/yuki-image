@@ -50,10 +50,6 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 		log.Println(err)
 		return model.Image{}, err
 	}
-	err = os.Remove(tmpPath)
-	if err != nil {
-		return model.Image{}, err
-	}
 
 	size, err := utils.GetImageSize(localFilePath)
 	if err != nil {

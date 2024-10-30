@@ -15,10 +15,12 @@ import (
 var db *sql.DB
 
 func InitDataBase() error {
+	address := fmt.Sprintf("%s:%s", conf.Conf.DB.Host, conf.Conf.DB.Port)
+	utils.WaitTcp(conf.Conf.DB.Host, conf.Conf.DB.Port)
 	data := conf.Conf.DB
 	var err error
 
-	dsn := data.User + ":" + data.Pwd + "@tcp(" + data.Host + ":" + data.Port + ")/" + data.Name
+	dsn := data.User + ":" + data.Pwd + "@tcp(" + address + ")/" + data.Name
 	db, err = sql.Open("mysql", dsn)
 	log.Println("Connecting to MySQL:", dsn)
 

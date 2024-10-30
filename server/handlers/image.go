@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	iablum "yuki-image/internal/album"
 	iimage "yuki-image/internal/image"
 	"yuki-image/internal/model"
 	"yuki-image/utils"
@@ -19,12 +20,23 @@ func UploadImage(ctx *gin.Context) {
 	}
 
 	album_id := ctx.PostForm("album_id")
-	album_uid, err := strconv.ParseUint(album_id, 10, 64)
+	idHasValue := album_id != ""
+	album_name := ctx.PostForm("album_name")
+	nameHasValue := album_name != ""
+	if !idHasValue && !nameHasValue {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "缺少相册信息", Data: err})
+		return
+	}
+	var album_uid uint64
+	if !idHasValue {
+		album_uid, err = iablum.SelectIdFromName(album_name)
+	} else {
+		album_uid, err = strconv.ParseUint(album_id, 10, 64)
+	}
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "文件上传失败", Data: err})
 		return
 	}
-
 	dst := fmt.Sprintf("tmp/%s", utils.GetRandKey())
 	if err := ctx.SaveUploadedFile(file, dst); err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "文件上传失败", Data: err})

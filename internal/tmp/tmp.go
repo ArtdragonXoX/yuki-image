@@ -29,7 +29,8 @@ func GetCount() (uint64, error) {
 }
 
 func Clear() error {
-	err := utils.DeleteDir("tmp")
+	var err error
+	err = utils.DeleteDir("tmp")
 	_ = utils.EnsureDir("tmp")
 	return err
 }
