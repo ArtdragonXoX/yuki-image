@@ -1,9 +1,9 @@
 server:
-    port:  7415                                                            # 服务器端口
+    port:  7415                                                             # 服务器端口
     token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ # 令牌
 db:
     host: yuki-image-db                                                     # mysql地址
-    port: 3306                                                            # mysql端口
+    port: 3306                                                              # mysql端口
     name: yuki_image_db                                                     # mysql名称
     user: yuki-image                                                        # mysql用户
     password: yuki-image                                                    # mysql密码

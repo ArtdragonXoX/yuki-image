@@ -5,6 +5,8 @@ import (
 	"yuki-image/utils"
 )
 
+var TmpPath string
+
 func GetInfo() (model.TmpInfo, error) {
 	var tmpInof model.TmpInfo
 	size, err := GetSize()
@@ -21,16 +23,16 @@ func GetInfo() (model.TmpInfo, error) {
 }
 
 func GetSize() (uint64, error) {
-	return utils.GetDirSize("tmp")
+	return utils.GetDirSize(TmpPath)
 }
 
 func GetCount() (uint64, error) {
-	return utils.GetFileCount("tmp")
+	return utils.GetFileCount(TmpPath)
 }
 
 func Clear() error {
 	var err error
-	err = utils.DeleteDir("tmp")
-	_ = utils.EnsureDir("tmp")
+	err = utils.DeleteDir(TmpPath)
+	_ = utils.EnsureDir(TmpPath)
 	return err
 }

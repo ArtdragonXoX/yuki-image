@@ -6,7 +6,6 @@ services:
         restart: no
         volumes:
             - ./config.yaml:/app/config.yaml
-            - ./data/tmp:/app/tmp
             - ./data/image:/app/localimage
         ports:
             - 7415:7415

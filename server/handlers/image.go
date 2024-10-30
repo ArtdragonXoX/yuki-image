@@ -7,6 +7,7 @@ import (
 	iablum "yuki-image/internal/album"
 	iimage "yuki-image/internal/image"
 	"yuki-image/internal/model"
+	"yuki-image/internal/tmp"
 	"yuki-image/utils"
 
 	"github.com/gin-gonic/gin"
@@ -37,7 +38,7 @@ func UploadImage(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "文件上传失败", Data: err})
 		return
 	}
-	dst := fmt.Sprintf("tmp/%s", utils.GetRandKey())
+	dst := fmt.Sprintf("%s/%s.%s", tmp.TmpPath, utils.GetRandKey(), utils.GetFileExt(file.Filename))
 	if err := ctx.SaveUploadedFile(file, dst); err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "文件上传失败", Data: err})
 		return

@@ -3,6 +3,7 @@ package utils
 import (
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func EnsureDir(dir string) error {
@@ -47,4 +48,14 @@ func GetFileCount(path string) (uint64, error) {
 
 func DeleteDir(dir string) error {
 	return os.RemoveAll(dir)
+}
+
+func GetFileExt(filename string) string {
+	// 使用 strings.LastIndex 查找最后一个点（.）的位置
+	dotIndex := strings.LastIndex(filename, ".")
+	if dotIndex == -1 {
+		return ""
+	}
+	// 返回从最后一个点开始到文件名末尾的子串作为文件扩展名
+	return filename[dotIndex+1:]
 }
