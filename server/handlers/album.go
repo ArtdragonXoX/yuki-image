@@ -32,13 +32,21 @@ func InsertAlbum(ctx *gin.Context) {
 }
 
 func UpdateAlbum(ctx *gin.Context) {
+	param := ctx.Param("id")
+	id, err := strconv.Atoi(param)
+	idHasValue := err == nil && id > 0
+
 	var album model.Album
-	err := ctx.ShouldBindJSON(&album)
+	err = ctx.ShouldBindJSON(&album)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "JSON error"})
 		return
 	}
-
+	if idHasValue {
+		album.Id = (uint64(id))
+	} else if param != "" {
+		album.Name = param
+	}
 	err = ialbum.Update(album)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "更新失败", Data: err})
@@ -48,17 +56,12 @@ func UpdateAlbum(ctx *gin.Context) {
 }
 
 func SelectAlbum(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Query("id"))
+	param := ctx.Param("id")
+	id, err := strconv.Atoi(param)
 	idHasValue := err == nil && id > 0
-	name := ctx.Query("name")
-	nameHasValue := name != ""
-	if !idHasValue && !nameHasValue {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
-		return
-	}
 	var album model.Album
 	if !idHasValue {
-		album, err = ialbum.SelectFromName(name)
+		album, err = ialbum.SelectFromName(param)
 	} else {
 		album, err = ialbum.Select(uint64(id))
 	}
@@ -94,17 +97,12 @@ func InsertFormatSupport(ctx *gin.Context) {
 }
 
 func SelectFormatSupport(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Query("id"))
+	param := ctx.Param("id")
+	id, err := strconv.Atoi(param)
 	idHasValue := err == nil && id > 0
-	name := ctx.Query("name")
-	nameHasValue := name != ""
-	if !idHasValue && !nameHasValue {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
-		return
-	}
 	var format_support []model.Format
 	if !idHasValue {
-		format_support, err = ialbum.SelectFormatSupportFromName(name)
+		format_support, err = ialbum.SelectFormatSupportFromName(param)
 	} else {
 		format_support, err = ialbum.SelectFormatSupport(uint64(id))
 	}
@@ -116,14 +114,9 @@ func SelectFormatSupport(ctx *gin.Context) {
 }
 
 func SelectImageFromAlbum(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Query("id"))
+	param := ctx.Param("id")
+	id, err := strconv.Atoi(param)
 	idHasValue := err == nil && id > 0
-	name := ctx.Query("name")
-	nameHasValue := name != ""
-	if !idHasValue && !nameHasValue {
-		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
-		return
-	}
 	page, err := strconv.Atoi(ctx.Query("page"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "Query error"})
@@ -137,7 +130,7 @@ func SelectImageFromAlbum(ctx *gin.Context) {
 	usize := uint64(size)
 	var imageList model.ImageList
 	if !idHasValue {
-		imageList, err = ialbum.SelectImageFromName(name, upage, usize)
+		imageList, err = ialbum.SelectImageFromName(param, upage, usize)
 	} else {
 		imageList, err = ialbum.SelectImage(uint64(id), upage, usize)
 	}
