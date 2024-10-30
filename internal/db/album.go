@@ -170,3 +170,14 @@ func GetAlbumImageTotal(albumId uint64) (uint64, error) {
 	err = stmt.QueryRow(albumId).Scan(&count)
 	return count, err
 }
+
+func DeleteAlbum(albumId uint64) error {
+	sql := "DELETE FROM tbl_album WHERE id = ?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(albumId)
+	return err
+}
