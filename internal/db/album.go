@@ -181,3 +181,14 @@ func DeleteAlbum(albumId uint64) error {
 	_, err = stmt.Exec(albumId)
 	return err
 }
+
+func ClearAlbum(albumId uint64) error {
+	sql := "DELETE FROM tbl_image WHERE album_id = ?"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(albumId)
+	return err
+}

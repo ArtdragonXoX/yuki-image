@@ -43,6 +43,7 @@ func InitAlbum(api *gin.RouterGroup) {
 		albumRoute.POST("", handlers.InsertAlbum)
 		albumRoute.PUT("/:id", handlers.UpdateAlbum)
 		albumRoute.DELETE("/:id", handlers.DeleteAlbum)
+		albumRoute.DELETE("/image/:id", handlers.ClearAlbum)
 		albumRoute.POST("/format", handlers.InsertFormatSupport)
 		albumRoute.GET("/format/:id", handlers.SelectFormatSupport)
 		albumRoute.DELETE("/format", handlers.DeleteFormatSupport)

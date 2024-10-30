@@ -81,6 +81,22 @@ func SelectAllAlbum(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: albums})
 }
 
+func ClearAlbum(ctx *gin.Context) {
+	param := ctx.Param("id")
+	id, err := strconv.Atoi(param)
+	idHasValue := err == nil && id > 0
+	if idHasValue {
+		err = ialbum.Clear(uint64(id))
+	} else {
+		err = ialbum.ClearFromName(param)
+	}
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "清空失败", Data: err})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "清空成功", Data: nil})
+}
+
 func DeleteAlbum(ctx *gin.Context) {
 	param := ctx.Param("id")
 	id, err := strconv.Atoi(param)
