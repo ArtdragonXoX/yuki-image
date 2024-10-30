@@ -9,12 +9,11 @@ https://apifox.com/apidoc/shared-62b5e13f-632a-4e0a-9e4a-cde4f293e29a
 ## 创建一个文件夹，在该文件夹内创建或下载文件config.yaml，内容为
 ```
 server:
-    port: "7415"                                                            # 服务器端口
-    host: http://127.0.0.1                                                  # 服务器地址
+    port:  7415                                                             # 服务器端口
     token: XIv3ybWOTIR2Md3sKuMk6AgqjBUH48IRK2d9RMqHGeVymDwc9AWMFOWV7lXc3foJ # 令牌
 db:
     host: yuki-image-db                                                     # mysql地址
-    port: "3306"                                                            # mysql端口
+    port: 3306                                                              # mysql端口
     name: yuki_image_db                                                     # mysql名称
     user: yuki-image                                                        # mysql用户
     password: yuki-image                                                    # mysql密码
@@ -26,6 +25,7 @@ image:
     path: ./localimage                                                     # 图片存储路径
     image_list_defalut_size: 10                                            # 图片列表默认大小
     compression_quality: 6                                                 # 图片压缩质量(1-6, 1最低质量, 质量越低速度越快)
+    url: http://127.0.0.1:7415                                             # 返回图片的url前缀
 ```
 ## 在release下载对应可执行文件在同一文件夹，执行
 ```
@@ -44,7 +44,6 @@ services:
         restart: no
         volumes:
             - ./config.yaml:/app/config.yaml
-            - ./data/tmp:/app/tmp
             - ./data/image:/app/localimage
         ports:
             - 7415:7415
