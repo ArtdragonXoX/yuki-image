@@ -9,7 +9,7 @@ import (
 )
 
 func Insert(album model.Album) (uint64, error) {
-	id, err := db.InsertAlbum(album)
+	id, err := db.InsertAlbum(album.ToDBModel())
 	if err != nil {
 		return 0, err
 	}

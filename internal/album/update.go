@@ -13,5 +13,18 @@ func Update(album model.Album) error {
 			return err
 		}
 	}
-	return db.UpdateAlbum(album)
+	dbalbum, err := db.SelectAlbum(album.Id)
+	if err != nil {
+		return err
+	}
+	if album.MaxHeight == 0 {
+		album.MaxHeight = dbalbum.MaxHeight
+	}
+	if album.MaxWidth == 0 {
+		album.MaxWidth = dbalbum.MaxWidth
+	}
+	if album.Name == "" {
+		album.Name = dbalbum.Name
+	}
+	return db.UpdateAlbum(album.ToDBModel())
 }

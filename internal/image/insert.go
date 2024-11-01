@@ -57,7 +57,7 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 	}
 
 	image := model.Image{
-		Id:         utils.GetRandKey(),
+		Key:        utils.GetRandKey(),
 		Name:       newFileName,
 		AlbumId:    albumId,
 		Pathname:   newFilePath,
@@ -65,11 +65,11 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 		Size:       size,
 		Mimetype:   utils.GetImageFormatName(format),
 	}
-	err = db.InsertImage(image)
+	err = db.InsertImage(image.ToDBModel())
 	if err != nil {
 		return model.Image{}, err
 	}
-	image, err = db.SelectImage(image.Id)
+	image, err = Select(image.Key)
 	if err != nil {
 		return model.Image{}, err
 	}

@@ -1,64 +1,41 @@
 package db
 
 import (
-	"log"
 	"time"
-	"yuki-image/internal/model"
-	"yuki-image/utils"
+	dbModel "yuki-image/internal/db/model"
 )
 
-func InsertImage(image model.Image) error {
-	sql := "INSERT INTO tbl_image (id, name,  album_id, pathname, origin_name, size, mimetype, time) VALUES (?, ?,  ?, ?, ?, ?, ?, ?)"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return err
+func InsertImage(image dbModel.Image) error {
+	time := time.Now()
+	image.CreateTime = time
+	tx := db.Create(&image)
+	if tx.Error != nil {
+		return tx.Error
 	}
-	time := time.Now().Format("2006-01-02 15:04:05")
-	_, err = stmt.Exec(image.Id, image.Name, image.AlbumId, image.Pathname, image.OriginName, image.Size, image.Mimetype, time)
-	if imagetmp, err := utils.PrettyStruct(image); err != nil {
-		log.Println("Pretty struct err:", err)
-		log.Println(sql, image)
-	} else {
-		log.Println(imagetmp)
-	}
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
-func SelectImage(id string) (model.Image, error) {
-	var image model.Image
-	sql := "SELECT * FROM tbl_image WHERE id = ?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return image, err
+func SelectImage(key string) (dbModel.Image, error) {
+	var image dbModel.Image
+	tx := db.First(&image, "key = ?", key)
+	if tx.Error != nil {
+		return dbModel.Image{}, tx.Error
 	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(id).Scan(&image.Id, &image.Name, &image.AlbumId, &image.Pathname, &image.OriginName, &image.Size, &image.Mimetype, &image.Time)
-	image.Url = utils.GetImageUrl(image)
-	return image, err
+	return image, nil
 }
 
-func SelectImageIdFromPath(pathname string) (string, error) {
-	sql := "SELECT id FROM tbl_image WHERE pathname = ?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return "", err
+func SelectImageKeyFromPath(pathname string) (string, error) {
+	var key string
+	tx := db.Model(dbModel.Image{}).Where("pathname = ?", pathname).Pluck("key", &key)
+	if tx.Error != nil {
+		return "", tx.Error
 	}
-	defer stmt.Close()
-	var id string
-	err = stmt.QueryRow(pathname).Scan(&id)
-	return id, err
+	return key, nil
 }
-func DeleteImage(id string) error {
-	sql := "DELETE FROM tbl_image WHERE id = ?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return err
+func DeleteImage(key string) error {
+	tx := db.Delete(&dbModel.Image{}, "key = ?", key)
+	if tx.Error != nil {
+		return tx.Error
 	}
-	_, err = stmt.Exec(id)
-	return err
+	return nil
 }
