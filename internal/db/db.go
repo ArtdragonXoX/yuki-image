@@ -30,6 +30,7 @@ func InitDataBase() error {
 	sqlDB, _ := db.DB()
 	sqlDB.SetMaxIdleConns(conf.Conf.DB.MaxIdle)
 	sqlDB.SetMaxOpenConns(conf.Conf.DB.MaxConn)
+	db.Exec("PRAGMA foreign_keys = ON")
 	log.Println("database init success!")
 	return nil
 }
@@ -52,7 +53,6 @@ func ResetDB() error {
 	InsertFormat(dbModel.Format{Name: "jpeg"})
 	InsertFormat(dbModel.Format{Name: "png"})
 	InsertFormat(dbModel.Format{Name: "gif"})
-	db.Exec("PRAGMA foreign_keys = ON")
 	log.Println("database reset success!")
 	return nil
 }
