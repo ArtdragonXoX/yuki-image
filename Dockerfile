@@ -11,11 +11,7 @@ RUN apk update --no-cache && apk add --no-cache tzdata
 # 安装 GCC 和其依赖项
 RUN apk add --no-cache \
     gcc \
-    g++ \
-    make \
-    libc-dev \
-    fortify-headers \
-    build-base
+    libc-dev 
 
 WORKDIR /build
 
