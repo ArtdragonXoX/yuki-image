@@ -13,6 +13,8 @@ import (
 
 var db *gorm.DB
 
+var dbFile = "./database/yuki-image.db"
+
 func InitDataBase() error {
 	if conf.Conf.DB.Reset {
 		err := ResetDB()
@@ -23,7 +25,7 @@ func InitDataBase() error {
 		utils.WriteYaml(conf.Conf, "config.yaml")
 	}
 	var err error
-	db, err = gorm.Open(sqlite.Open("yuki-image.db"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -36,7 +38,7 @@ func InitDataBase() error {
 }
 
 func ResetDB() error {
-	dbFile := "yuki-image.db"
+	utils.EnsureDir(dbFile)
 	_, err := os.Stat(dbFile)
 	if err == nil {
 		err := os.Remove(dbFile)
@@ -48,7 +50,7 @@ func ResetDB() error {
 			return err
 		}
 	}
-	db, err = gorm.Open(sqlite.Open("yuki-image.db"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
 	if err != nil {

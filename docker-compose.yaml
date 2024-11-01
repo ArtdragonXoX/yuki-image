@@ -7,17 +7,6 @@ services:
         volumes:
             - ./config.yaml:/app/config.yaml
             - ./data/image:/app/localimage
+            - ./data:/app/database
         ports:
             - 7415:7415
-    mysql:
-        image: mysql:8.0
-        container_name: yuki-image-db
-        restart: no
-        hostname: yuki-image-db
-        environment:
-          - MYSQL_DATABASE=yuki_image_db
-          - MYSQL_USER=yuki-image
-          - MYSQL_PASSWORD=yuki-image
-          - MYSQL_ROOT_PASSWORD=yuki-image
-        volumes:
-          - ./data/db:/var/lib/mysql

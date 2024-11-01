@@ -39,4 +39,4 @@ dist/
 
 /build/
 
-yuki-image.db
+/database/
