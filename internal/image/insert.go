@@ -18,7 +18,6 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 	if err != nil {
 		return model.Image{}, err
 	}
-	defer file.Close()
 	buff := make([]byte, 512)
 
 	_, err = file.Read(buff)
@@ -109,5 +108,9 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 		return model.Image{}, err
 	}
 	image.Url = utils.GetImageUrl(image)
+	file.Close()
+	if conf.Conf.Image.AutoDeleteTmp {
+		os.Remove(tmpPath)
+	}
 	return image, nil
 }

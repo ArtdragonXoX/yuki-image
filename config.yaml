@@ -9,6 +9,7 @@ image:
     key_length: 8                                                          #key长度
     max_size: 20                                                           # 图片最大大小(MB)
     path: ./localimage                                                     # 图片存储路径
+    auto_delete_tmp: true                                                  # 是否自动删除临时文件
     image_list_defalut_size: 10                                            # 图片列表默认大小
     compression_quality: 6                                                 # 图片压缩质量(1-6, 1最低质量, 质量越低速度越快)
     url: http://127.0.0.1:7415                                             # 返回图片的url前缀
