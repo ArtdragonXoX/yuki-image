@@ -1,8 +1,11 @@
 package db
 
 import (
+	"errors"
 	"time"
 	dbModel "yuki-image/internal/db/model"
+
+	"gorm.io/gorm"
 )
 
 func InsertImage(image dbModel.Image) error {
@@ -38,4 +41,22 @@ func DeleteImage(key string) error {
 		return tx.Error
 	}
 	return nil
+}
+
+func ContainsImageName(name string) (bool, error) {
+	var image dbModel.Image
+	err := db.Model(dbModel.Image{}).Where("name = ?", name).First(&image).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
+	}
+	return true, err
+}
+
+func ContainsImageKey(key string) (bool, error) {
+	var image dbModel.Image
+	err := db.Model(dbModel.Image{}).Where("key = ?", key).First(&image).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
+	}
+	return true, err
 }

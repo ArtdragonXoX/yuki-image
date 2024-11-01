@@ -6,6 +6,7 @@ db:
     max_idle_conns: 5                                                       # 最大空闲连接数
     reset: true                                                             # 是否重置数据库
 image:
+    key_length: 8                                                          #key长度
     max_size: 20                                                           # 图片最大大小(MB)
     path: ./localimage                                                     # 图片存储路径
     image_list_defalut_size: 10                                            # 图片列表默认大小

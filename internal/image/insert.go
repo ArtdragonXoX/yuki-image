@@ -42,9 +42,19 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 	if !utils.Contains(formats, utils.GetImageFormatName(format)) {
 		return model.Image{}, errors.New("format not supported")
 	}
-	hash, err := utils.GetByteHash(buff)
-	if err != nil {
-		return model.Image{}, err
+	var hash string
+	for {
+		hash, err = utils.GetByteHash(buff)
+		if err != nil {
+			return model.Image{}, err
+		}
+		v, err := db.ContainsImageName(hash)
+		if err != nil {
+			return model.Image{}, err
+		}
+		if !v {
+			break
+		}
 	}
 	newFileName := fmt.Sprintf("%s.%s", hash, utils.GetImageFormatName(format))
 	newFilePath := fmt.Sprintf("%s/%s", album.Name, newFileName)
@@ -69,8 +79,20 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 		return model.Image{}, err
 	}
 
+	var key string
+	for {
+		key = utils.GetRandKey()
+		v, err := db.ContainsImageKey(key)
+		if err != nil {
+			return model.Image{}, err
+		}
+		if !v {
+			break
+		}
+	}
+
 	image := model.Image{
-		Key:        utils.GetRandKey(),
+		Key:        key,
 		Name:       newFileName,
 		AlbumId:    albumId,
 		Pathname:   newFilePath,
