@@ -10,7 +10,7 @@ var DBReset = &cobra.Command{
 	Use:   "reset",
 	Short: "Reset the database to a clean state.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return idb.InitDataBase()
+		return idb.ResetDB()
 	},
 }
 
