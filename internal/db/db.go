@@ -36,9 +36,17 @@ func InitDataBase() error {
 }
 
 func ResetDB() error {
-	err := os.Remove("yuki-image.db")
-	if err != nil {
-		return err
+	dbFile := "yuki-image.db"
+	_, err := os.Stat(dbFile)
+	if err == nil {
+		err := os.Remove(dbFile)
+		if err != nil {
+			return err
+		}
+	} else {
+		if !os.IsNotExist(err) {
+			return err
+		}
 	}
 	db, err = gorm.Open(sqlite.Open("yuki-image.db"), &gorm.Config{})
 	sqlDB, _ := db.DB()
