@@ -1,9 +1,11 @@
 package image
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
+	ialbum "yuki-image/internal/album"
 	"yuki-image/internal/conf"
 	"yuki-image/internal/db"
 	imageio "yuki-image/internal/image/file"
@@ -25,13 +27,34 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 	}
 
 	format := utils.GetImageFormat(buff)
-	album, err := db.SelectAlbum(albumId)
+	album, err := ialbum.Select(albumId)
 	if err != nil {
 		return model.Image{}, err
 	}
-	hash, err := utils.GetByteHash(buff)
+	albumFormat, err := ialbum.SelectFormatSupport(albumId)
 	if err != nil {
 		return model.Image{}, err
+	}
+	var formats []string
+	for _, v := range albumFormat {
+		formats = append(formats, v.Name)
+	}
+	if !utils.Contains(formats, utils.GetImageFormatName(format)) {
+		return model.Image{}, errors.New("format not supported")
+	}
+	var hash string
+	for {
+		hash, err = utils.GetByteHash(buff)
+		if err != nil {
+			return model.Image{}, err
+		}
+		v, err := db.ContainsImageName(hash)
+		if err != nil {
+			return model.Image{}, err
+		}
+		if !v {
+			break
+		}
 	}
 	newFileName := fmt.Sprintf("%s.%s", hash, utils.GetImageFormatName(format))
 	newFilePath := fmt.Sprintf("%s/%s", album.Name, newFileName)
@@ -56,8 +79,20 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 		return model.Image{}, err
 	}
 
+	var key string
+	for {
+		key = utils.GetRandKey()
+		v, err := db.ContainsImageKey(key)
+		if err != nil {
+			return model.Image{}, err
+		}
+		if !v {
+			break
+		}
+	}
+
 	image := model.Image{
-		Id:         utils.GetRandKey(),
+		Key:        key,
 		Name:       newFileName,
 		AlbumId:    albumId,
 		Pathname:   newFilePath,
@@ -65,11 +100,11 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 		Size:       size,
 		Mimetype:   utils.GetImageFormatName(format),
 	}
-	err = db.InsertImage(image)
+	err = db.InsertImage(image.ToDBModel())
 	if err != nil {
 		return model.Image{}, err
 	}
-	image, err = db.SelectImage(image.Id)
+	image, err = Select(image.Key)
 	if err != nil {
 		return model.Image{}, err
 	}

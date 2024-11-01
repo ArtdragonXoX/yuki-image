@@ -7,46 +7,35 @@ import (
 )
 
 func InsertFormatSupport(formatSupport model.FormatSupport) error {
-	albumId := formatSupport.AlbumId
-	formatId := formatSupport.FormatId
-	var err error
-	if albumId == 0 {
-		albumId, err = SelectIdFromName(formatSupport.AlbumName)
-		if err != nil {
-			return err
-		}
+	formatSupport, err := GetFormatSupportId(formatSupport)
+	if err != nil {
+		return err
 	}
-	if formatId == 0 {
-		formatId, err = iformat.SelectIdFromName(formatSupport.FormatName)
-		if err != nil {
-			return err
-		}
-	}
-	return db.InsertFormatSupport(model.FormatSupport{
-		AlbumId:  albumId,
-		FormatId: formatId,
-	})
+	return db.InsertFormatSupport(formatSupport.ToDBModel())
 }
 func DeleteFormatSupport(formatSupport model.FormatSupport) error {
-	albumId := formatSupport.AlbumId
-	formatId := formatSupport.FormatId
+	formatSupport, err := GetFormatSupportId(formatSupport)
+	if err != nil {
+		return err
+	}
+	return db.DeleteFormatSupport(formatSupport.ToDBModel())
+}
+
+func GetFormatSupportId(formatSupport model.FormatSupport) (model.FormatSupport, error) {
 	var err error
-	if albumId == 0 {
-		albumId, err = SelectIdFromName(formatSupport.AlbumName)
+	if formatSupport.AlbumId <= 0 {
+		formatSupport.AlbumId, err = SelectIdFromName(formatSupport.AlbumName)
 		if err != nil {
-			return err
+			return model.FormatSupport{}, err
 		}
 	}
-	if formatId == 0 {
-		formatId, err = iformat.SelectIdFromName(formatSupport.FormatName)
+	if formatSupport.FormatId <= 0 {
+		formatSupport.FormatId, err = iformat.SelectIdFromName(formatSupport.FormatName)
 		if err != nil {
-			return err
+			return model.FormatSupport{}, err
 		}
 	}
-	return db.DeleteFormatSupport(model.FormatSupport{
-		AlbumId:  albumId,
-		FormatId: formatId,
-	})
+	return formatSupport, nil
 }
 
 func SelectFormatSupportFromName(name string) ([]model.Format, error) {
@@ -54,10 +43,22 @@ func SelectFormatSupportFromName(name string) ([]model.Format, error) {
 	if err != nil {
 		return nil, err
 	}
-	return db.SelectFormatSupport(id)
+	return SelectFormatSupport(id)
 
 }
 
 func SelectFormatSupport(albumId uint64) ([]model.Format, error) {
-	return db.SelectFormatSupport(albumId)
+	dbformatsupport, err := db.SelectFormatSupport(albumId)
+	if err != nil {
+		return nil, err
+	}
+	var formats []model.Format
+	for _, dbformat := range dbformatsupport {
+		format, err := iformat.Select(dbformat.FormatId)
+		if err != nil {
+			return nil, err
+		}
+		formats = append(formats, format)
+	}
+	return formats, nil
 }

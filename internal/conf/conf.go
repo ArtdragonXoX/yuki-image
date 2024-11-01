@@ -19,6 +19,7 @@ func InitConfig() error {
 		return err
 	}
 	utils.BaseUrl = fmt.Sprintf("%s", Conf.Image.Url)
+	utils.KeyLength = Conf.Image.KeyLength
 	return nil
 }
 

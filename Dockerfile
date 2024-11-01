@@ -2,11 +2,20 @@ FROM golang:alpine AS builder
 
 LABEL stage=gobuilder
 
-ENV CGO_ENABLED=0
+ENV CGO_ENABLED=1
 ENV GOPROXY=https://goproxy.cn,direct
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 RUN apk update --no-cache && apk add --no-cache tzdata
+
+# 安装 GCC 和其依赖项
+RUN apk add --no-cache \
+    gcc \
+    g++ \
+    make \
+    libc-dev \
+    fortify-headers \
+    build-base
 
 WORKDIR /build
 
@@ -16,8 +25,7 @@ RUN go mod download
 COPY . .
 RUN go build -ldflags="-s -w" -o /app/yuki-image main.go
 
-
-FROM scratch
+FROM alpine
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai

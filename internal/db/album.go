@@ -1,194 +1,92 @@
 package db
 
 import (
-	"log"
 	"time"
-	"yuki-image/internal/model"
-	"yuki-image/utils"
+	dbModel "yuki-image/internal/db/model"
 )
 
-func InsertAlbum(album model.Album) (uint64, error) {
-	sql := "INSERT INTO tbl_album (name,max_height,max_width,update_time,create_time) VALUES (?,?,?,?,?)"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return 0, err
+func InsertAlbum(album dbModel.Album) (uint64, error) {
+	time := time.Now()
+	album.CreateTime = time
+	album.UpdateTime = time
+	tx := db.Create(&album)
+	if tx.Error != nil {
+		return 0, tx.Error
 	}
-	defer stmt.Close()
-	time := time.Now().Format("2006-01-02 15:04:05")
-	result, err := stmt.Exec(album.Name, album.MaxHeight, album.MaxWidth, time, time)
-	if albumtmp, err := utils.PrettyStruct(album); err != nil {
-		log.Println("Pretty struct err:", err)
-		log.Println(sql, album)
-	} else {
-		log.Println(albumtmp)
-	}
-
-	if err != nil {
-		return 0, err
-	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-
-	return uint64(id), nil
+	return album.Id, nil
 }
 
-func UpdateAlbum(album model.Album) error {
-	sql := "UPDATE tbl_album SET name = ?,max_height = ?,max_width = ?,update_time=? WHERE id = ?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-	album_, err := SelectAlbum(album.Id)
-	if err != nil {
-		return err
-	}
-	if album.Name == "" {
-		album.Name = album_.Name
-	}
-	if album.MaxHeight == 0 {
-		album.MaxHeight = album_.MaxHeight
-	}
-	if album.MaxWidth == 0 {
-		album.MaxWidth = album_.MaxWidth
-	}
-	time := time.Now().Format("2006-01-02 15:04:05")
-	_, err = stmt.Exec(album.Name, album.MaxHeight, album.MaxWidth, time, album.Id)
-	if err != nil {
-		return err
+func UpdateAlbum(album dbModel.Album) error {
+	tx := db.Model(&album).Where("id = ?", album.Id).Updates(map[string]interface{}{
+		"name":        album.Name,
+		"max_height":  album.MaxHeight,
+		"max_width":   album.MaxWidth,
+		"update_time": time.Now().Format("2006-01-02 15:04:05"),
+	})
+	if tx.Error != nil {
+		return tx.Error
 	}
 	return nil
 }
 
-func SelectAlbum(id uint64) (model.Album, error) {
-	var album model.Album
-	sql := "SELECT * FROM tbl_album WHERE id = ?"
-	log.Println(sql, id)
-	err := db.QueryRow(sql, id).Scan(&album.Id, &album.Name, &album.MaxHeight, &album.MaxWidth, &album.UpdateTime, &album.CreateTime)
-	if err != nil {
-		return model.Album{}, err
+func SelectAlbum(id uint64) (dbModel.Album, error) {
+	var album dbModel.Album
+	tx := db.First(&album, "id=?", id)
+	if tx.Error != nil {
+		return dbModel.Album{}, tx.Error
 	}
-	format_support, err := SelectFormatSupport(album.Id)
-	if err != nil {
-		return model.Album{}, err
-	}
-	album.FormatSupport = format_support
-	total, err := GetAlbumImageTotal(id)
-	if err != nil {
-		return album, err
-	}
-	album.Image = model.ImageList{Total: total}
-
-	return album, err
-}
-
-func SelectAlbumFromName(name string) (model.Album, error) {
-	albumId, err := SelectAlbumIdFromName(name)
-	if err != nil {
-		return model.Album{}, err
-	}
-	return SelectAlbum(albumId)
+	return album, nil
 }
 
 func SelectAlbumIdFromName(name string) (uint64, error) {
 	var albumId uint64
-	sql := "SELECT id FROM tbl_album WHERE name = ?"
-	err := db.QueryRow(sql, name).Scan(&albumId)
-	if err != nil {
-		return 0, err
+	tx := db.Model(dbModel.Album{}).Where("name = ?", name).Pluck("id", &albumId)
+	if tx.Error != nil {
+		return 0, tx.Error
 	}
 	return albumId, nil
 }
 
-func SelectAllAlbum() ([]model.Album, error) {
-	sql := "SELECT id FROM tbl_album"
-	rows, err := db.Query(sql)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	albums := make([]model.Album, 0)
-	for rows.Next() {
-		var id uint64
-		err = rows.Scan(&id)
-		if err != nil {
-			return nil, err
-		}
-		album, err := SelectAlbum(id)
-		if err != nil {
-			return nil, err
-		}
-		albums = append(albums, album)
+func SelectAllAlbum() ([]dbModel.Album, error) {
+	var albums []dbModel.Album
+	tx := db.Find(&albums)
+	if tx.Error != nil {
+		return []dbModel.Album{}, tx.Error
 	}
 	return albums, nil
 }
 
-func SelectImageFromAlbum(albumId uint64, page uint64, size uint64) (model.ImageList, error) {
-	var images []model.Image
-	var imageList model.ImageList
+func SelectImageFromAlbum(albumId uint64, page uint64, size uint64) ([]dbModel.Image, error) {
+	var images []dbModel.Image
 
-	sql := "SELECT id FROM tbl_image WHERE album_id = ? LIMIT ?,?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return model.ImageList{}, err
+	tx := db.Offset(int((page-1)*size)).Limit(int(size)).Where("album_id = ?", albumId).Find(&images)
+	if tx.Error != nil {
+		return nil, tx.Error
 	}
-	defer stmt.Close()
-	rowNum := (page - 1) * size
-	rows, err := stmt.Query(albumId, rowNum, size)
-	for rows.Next() {
-		var imageId string
-		err = rows.Scan(&imageId)
-		if err != nil {
-			return model.ImageList{}, err
-		}
-		image, err := SelectImage(imageId)
-		if err != nil {
-			return model.ImageList{}, err
-		}
-		images = append(images, image)
-	}
-	imageList.Image = images
-	imageList.Total, err = GetAlbumImageTotal(albumId)
-	if err != nil {
-		return model.ImageList{}, err
-	}
-	imageList.Page = page
-	imageList.Size = size
-	return imageList, err
+	return images, nil
 }
 
 func GetAlbumImageTotal(albumId uint64) (uint64, error) {
-	var count uint64
-	sql := "SELECT COUNT(*) FROM tbl_image WHERE album_id = ?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return 0, err
+	var count int64
+	tx := db.Model(&dbModel.Image{}).Where("album_id = ?", albumId).Count(&count)
+	if tx.Error != nil {
+		return 0, tx.Error
 	}
-	defer stmt.Close()
-	err = stmt.QueryRow(albumId).Scan(&count)
-	return count, err
+	return uint64(count), nil
 }
 
 func DeleteAlbum(albumId uint64) error {
-	sql := "DELETE FROM tbl_album WHERE id = ?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return err
+	tx := db.Delete(&dbModel.Album{}, "id=?", albumId)
+	if tx.Error != nil {
+		return tx.Error
 	}
-	defer stmt.Close()
-	_, err = stmt.Exec(albumId)
-	return err
+	return tx.Error
 }
 
 func ClearAlbum(albumId uint64) error {
-	sql := "DELETE FROM tbl_image WHERE album_id = ?"
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		return err
+	tx := db.Delete(&dbModel.Image{}, "album_id=?", albumId)
+	if tx.Error != nil {
+		return tx.Error
 	}
-	defer stmt.Close()
-	_, err = stmt.Exec(albumId)
-	return err
+	return tx.Error
 }
