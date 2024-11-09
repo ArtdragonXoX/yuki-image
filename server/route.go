@@ -4,6 +4,7 @@ import (
 	"yuki-image/internal/conf"
 	"yuki-image/server/handlers"
 	"yuki-image/server/middlewares"
+	"yuki-image/static"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +16,8 @@ func NewAndInit() error {
 }
 
 func Init(e *gin.Engine) {
-	InitRoute(e)
+	InitStatic(e)
+	InitAPIRoutes(e)
 }
 
 func New() *gin.Engine {
@@ -23,9 +25,13 @@ func New() *gin.Engine {
 	return r
 }
 
-func InitRoute(server *gin.Engine) {
-	server.Static("/i", conf.Conf.Image.Path)
+func InitStatic(server *gin.Engine) {
+	server.Static("/i/", conf.Conf.Image.Path)
 	server.MaxMultipartMemory = int64(conf.Conf.Image.MaxSize) << 20
+	static.InitStatic(server)
+}
+
+func InitAPIRoutes(server *gin.Engine) {
 	api := server.Group("/api/v1")
 	api.Use(middlewares.TokenAuthMiddleware())
 	InitAlbum(api)
