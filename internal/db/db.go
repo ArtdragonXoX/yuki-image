@@ -39,17 +39,14 @@ func InitDataBase() error {
 
 func ResetDB() error {
 	utils.EnsureDir(dbFile)
-	_, err := os.Stat(dbFile)
-	if err == nil {
-		err := os.Remove(dbFile)
-		if err != nil {
-			return err
-		}
-	} else {
-		if !os.IsNotExist(err) {
-			return err
-		}
+	v, err := utils.IsFileExists(dbFile)
+	if err != nil {
+		return err
 	}
+	if v {
+		os.Remove(dbFile)
+	}
+
 	db, err = gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()

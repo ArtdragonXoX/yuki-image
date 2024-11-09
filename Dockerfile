@@ -9,9 +9,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk update --no-cache && apk add --no-cache tzdata
 
 # 安装 GCC 和其依赖项
-RUN apk add --no-cache \
-    gcc \
-    libc-dev 
+RUN apk add --no-cache g++
 
 WORKDIR /build
 

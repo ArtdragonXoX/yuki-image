@@ -30,6 +30,7 @@ func WriteYaml(v interface{}, path string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 	_, err = file.Write(yamlData)
 	return err
 }
