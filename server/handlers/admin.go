@@ -32,7 +32,7 @@ func AdminLogin(c *gin.Context) {
 	}
 	token, err := admin.UserLogin(u)
 	if err != nil {
-		c.JSON(http.StatusOK, model.RespError("登录失败", err.Error()))
+		c.JSON(http.StatusBadRequest, model.RespError("登录失败", map[string]string{"err": err.Error()}))
 		return
 	}
 	c.JSON(http.StatusOK, model.RespOk("登录成功", token))
