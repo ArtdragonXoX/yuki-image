@@ -17,7 +17,7 @@ func AdminRegister(c *gin.Context) {
 	}
 	err = admin.UserRegister(u)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.RespError("注册失败", map[string]string{"err": err.Error()}))
+		c.JSON(http.StatusBadRequest, model.RespError("注册失败", err.Error()))
 		return
 	}
 	c.JSON(http.StatusOK, model.RespOk("注册成功", nil))
@@ -32,8 +32,8 @@ func AdminLogin(c *gin.Context) {
 	}
 	token, err := admin.UserLogin(u)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.RespError("登录失败", map[string]string{"err": err.Error()}))
+		c.JSON(http.StatusBadRequest, model.RespError("登录失败", err.Error()))
 		return
 	}
-	c.JSON(http.StatusOK, model.RespOk("登录成功", map[string]string{"token": token}))
+	c.JSON(http.StatusOK, model.RespOk("登录成功", token))
 }
