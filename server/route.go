@@ -18,6 +18,7 @@ func NewAndInit() error {
 func Init(e *gin.Engine) {
 	InitStatic(e)
 	InitAPIRoutes(e)
+	InitAdminRoutes(e)
 }
 
 func New() *gin.Engine {
@@ -29,6 +30,14 @@ func InitStatic(server *gin.Engine) {
 	server.Static("/i/", conf.Conf.Image.Path)
 	server.MaxMultipartMemory = int64(conf.Conf.Image.MaxSize) << 20
 	static.InitStatic(server)
+}
+
+func InitAdminRoutes(server *gin.Engine) {
+	adminRoute := server.Group("/admin")
+	{
+		adminRoute.POST("/login", handlers.AdminLogin)
+		adminRoute.POST("/register", handlers.AdminRegister)
+	}
 }
 
 func InitAPIRoutes(server *gin.Engine) {

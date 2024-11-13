@@ -40,3 +40,5 @@ dist/
 /build/
 
 /database/
+
+admin.yaml
