@@ -20,6 +20,7 @@ func InitConfig() error {
 	}
 	utils.BaseUrl = fmt.Sprintf("%s", Conf.Image.Url)
 	utils.KeyLength = Conf.Image.KeyLength
+	utils.Secret = Conf.Server.Token
 	return nil
 }
 
