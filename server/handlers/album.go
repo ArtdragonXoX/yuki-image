@@ -113,6 +113,58 @@ func DeleteAlbum(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "删除成功", Data: nil})
 }
 
+func GetAllAlbumSize(ctx *gin.Context) {
+	size, err := ialbum.GetAllSize()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: size})
+}
+
+func GetAllAlbumCount(ctx *gin.Context) {
+	count, err := ialbum.GetAllCount()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: count})
+}
+
+func GetAlbumSize(ctx *gin.Context) {
+	var size uint64
+	param := ctx.Param("id")
+	id, err := strconv.Atoi(param)
+	idHasValue := err == nil && id > 0
+	if idHasValue {
+		size, err = ialbum.GetSize(uint64(id))
+	} else {
+		size, err = ialbum.GetSizeFromName(param)
+	}
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: size})
+}
+
+func GetAlbumCount(ctx *gin.Context) {
+	var count uint64
+	param := ctx.Param("id")
+	id, err := strconv.Atoi(param)
+	idHasValue := err == nil && id > 0
+	if idHasValue {
+		count, err = ialbum.GetCount(uint64(id))
+	} else {
+		count, err = ialbum.GetCountFromName(param)
+	}
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: count})
+}
+
 func InsertFormatSupport(ctx *gin.Context) {
 	var formatSupport model.FormatSupport
 	err := ctx.ShouldBindJSON(&formatSupport)

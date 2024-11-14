@@ -47,6 +47,15 @@ func SelectAlbumIdFromName(name string) (uint64, error) {
 	return albumId, nil
 }
 
+func SelectAlbumNameFromId(id uint64) (string, error) {
+	var name string
+	tx := db.Model(dbModel.Album{}).Where("id = ?", id).Pluck("name", &name)
+	if tx.Error != nil {
+		return "", tx.Error
+	}
+	return name, nil
+}
+
 func SelectAllAlbum() ([]dbModel.Album, error) {
 	var albums []dbModel.Album
 	tx := db.Find(&albums)

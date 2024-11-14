@@ -47,6 +47,10 @@ func InitAlbum(api *gin.RouterGroup) {
 		albumRoute.GET("/format/:id", handlers.SelectFormatSupport)
 		albumRoute.DELETE("/format", handlers.DeleteFormatSupport)
 		albumRoute.GET("/image/:id", handlers.SelectImageFromAlbum)
+		albumRoute.GET("/size", handlers.GetAlbumSize)
+		albumRoute.GET("/count", handlers.GetAlbumCount)
+		albumRoute.GET("/size/:id", handlers.GetAlbumSize)
+		albumRoute.GET("/count/:id", handlers.GetAlbumCount)
 	}
 }
 
