@@ -20,7 +20,6 @@ var (
 func init() {
 	Expire = 7200
 	Refresh = 3600
-	Secret = "yuki"
 }
 
 // 生成token
