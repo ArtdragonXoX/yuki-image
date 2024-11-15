@@ -17,7 +17,7 @@ func AdminRegister(c *gin.Context) {
 	}
 	err = admin.UserRegister(u)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.RespError("注册失败", err.Error()))
+		c.JSON(http.StatusOK, model.RespError("注册失败", err.Error()))
 		return
 	}
 	c.JSON(http.StatusOK, model.RespOk("注册成功", nil))
