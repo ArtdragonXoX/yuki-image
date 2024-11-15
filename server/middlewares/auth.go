@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"log"
 	"net/http"
 	"yuki-image/internal/conf"
 	"yuki-image/internal/model"
@@ -26,7 +25,6 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, model.RespError("token验证失败", nil))
 			return
 		}
-		log.Println("token验证成功")
 		c.Next() // 继续处理请求
 	}
 }
