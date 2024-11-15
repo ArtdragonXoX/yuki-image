@@ -2,6 +2,7 @@ package album
 
 import (
 	"fmt"
+	"time"
 	"yuki-image/internal/conf"
 	"yuki-image/internal/db"
 	"yuki-image/utils"
@@ -55,4 +56,24 @@ func GetCountFromName(name string) (uint64, error) {
 		return 0, err
 	}
 	return count, nil
+}
+
+func GetStatistics(id uint64, dateS time.Time, dateE time.Time) (map[string]uint64, error) {
+	statistics, err := db.SelectStatistics(id, dateS, dateE)
+	if err != nil {
+		return nil, err
+	}
+	return statistics, nil
+}
+
+func GetStatisticsFromName(name string, dateS time.Time, dateE time.Time) (map[string]uint64, error) {
+	id, err := db.SelectAlbumIdFromName(name)
+	if err != nil {
+		return nil, err
+	}
+	return GetStatistics(id, dateS, dateE)
+}
+
+func GetAllStatistics(dateS time.Time, dateE time.Time) (map[string]uint64, error) {
+	return db.SelectAllStatistics(dateS, dateE)
 }

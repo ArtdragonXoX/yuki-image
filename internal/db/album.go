@@ -99,3 +99,53 @@ func ClearAlbum(albumId uint64) error {
 	}
 	return tx.Error
 }
+
+func SelectStatistics(albumId uint64, startDate time.Time, endDate time.Time) (map[string]uint64, error) {
+	const dateFormat = "%Y-%m-%d"
+	var statistics = make(map[string]uint64)
+	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, count(*) as count").
+		Where("album_id = ? AND create_time >= ? AND create_time <= ?", albumId, startDate, endDate).
+		Group("strftime('" + dateFormat + "', create_time)").Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var date string
+	var count uint64
+	for rows.Next() {
+		err := rows.Scan(&date, &count)
+		if err != nil {
+			return nil, err
+		}
+		statistics[date] = count
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return statistics, nil
+}
+
+func SelectAllStatistics(startDate time.Time, endDate time.Time) (map[string]uint64, error) {
+	const dateFormat = "%Y-%m-%d"
+	var statistics = make(map[string]uint64)
+	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, count(*) as count").
+		Where("create_time >= ? AND create_time <= ?", startDate, endDate).
+		Group("strftime('" + dateFormat + "', create_time)").Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var date string
+	var count uint64
+	for rows.Next() {
+		err := rows.Scan(&date, &count)
+		if err != nil {
+			return nil, err
+		}
+		statistics[date] = count
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return statistics, nil
+}
