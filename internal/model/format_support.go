@@ -1,6 +1,9 @@
 package model
 
-import dbModel "yuki-image/internal/db/model"
+import (
+	"yuki-image/internal/db/model"
+	dbModel "yuki-image/internal/db/model"
+)
 
 type FormatSupport struct {
 	FormatId   uint64 `json:"format_id",omitempty`
@@ -19,4 +22,13 @@ func (f *FormatSupport) ToDBModel() dbModel.FormatSupport {
 func (f *FormatSupport) FromDBModel(dbModel dbModel.FormatSupport) {
 	f.FormatId = dbModel.FormatId
 	f.AlbumId = dbModel.AlbumId
+}
+
+func ContainsFormatSupport(formatSupports []model.Format, format uint64) bool {
+	for _, v := range formatSupports {
+		if v.Id == format {
+			return true
+		}
+	}
+	return false
 }

@@ -5,6 +5,7 @@ import (
 	"time"
 	"yuki-image/internal/conf"
 	"yuki-image/internal/db"
+	"yuki-image/internal/model"
 	"yuki-image/utils"
 )
 
@@ -58,15 +59,16 @@ func GetCountFromName(name string) (uint64, error) {
 	return count, nil
 }
 
-func GetStatistics(id uint64, dateS time.Time, dateE time.Time) (map[string]uint64, error) {
+func GetStatistics(id uint64, dateS time.Time, dateE time.Time) (model.Statictics, error) {
 	statistics, err := db.SelectStatistics(id, dateS, dateE)
 	if err != nil {
 		return nil, err
 	}
+	statistics.FillZero(dateS, dateE)
 	return statistics, nil
 }
 
-func GetStatisticsFromName(name string, dateS time.Time, dateE time.Time) (map[string]uint64, error) {
+func GetStatisticsFromName(name string, dateS time.Time, dateE time.Time) (model.Statictics, error) {
 	id, err := db.SelectAlbumIdFromName(name)
 	if err != nil {
 		return nil, err
@@ -74,6 +76,11 @@ func GetStatisticsFromName(name string, dateS time.Time, dateE time.Time) (map[s
 	return GetStatistics(id, dateS, dateE)
 }
 
-func GetAllStatistics(dateS time.Time, dateE time.Time) (map[string]uint64, error) {
-	return db.SelectAllStatistics(dateS, dateE)
+func GetAllStatistics(dateS time.Time, dateE time.Time) (model.Statictics, error) {
+	statictics, err := db.SelectAllStatistics(dateS, dateE)
+	if err != nil {
+		return nil, err
+	}
+	statictics.FillZero(dateS, dateE)
+	return statictics, nil
 }

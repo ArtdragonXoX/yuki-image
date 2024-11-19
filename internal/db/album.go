@@ -3,6 +3,7 @@ package db
 import (
 	"time"
 	dbModel "yuki-image/internal/db/model"
+	"yuki-image/internal/model"
 )
 
 func InsertAlbum(album dbModel.Album) (uint64, error) {
@@ -100,9 +101,9 @@ func ClearAlbum(albumId uint64) error {
 	return tx.Error
 }
 
-func SelectStatistics(albumId uint64, startDate time.Time, endDate time.Time) (map[string]uint64, error) {
+func SelectStatistics(albumId uint64, startDate time.Time, endDate time.Time) (model.Statictics, error) {
 	const dateFormat = "%Y-%m-%d"
-	var statistics = make(map[string]uint64)
+	var statistics = make(model.Statictics)
 	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, count(*) as count").
 		Where("album_id = ? AND create_time >= ? AND create_time <= ?", albumId, startDate, endDate).
 		Group("strftime('" + dateFormat + "', create_time)").Rows()
@@ -125,9 +126,9 @@ func SelectStatistics(albumId uint64, startDate time.Time, endDate time.Time) (m
 	return statistics, nil
 }
 
-func SelectAllStatistics(startDate time.Time, endDate time.Time) (map[string]uint64, error) {
+func SelectAllStatistics(startDate time.Time, endDate time.Time) (model.Statictics, error) {
 	const dateFormat = "%Y-%m-%d"
-	var statistics = make(map[string]uint64)
+	var statistics = make(model.Statictics)
 	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, count(*) as count").
 		Where("create_time >= ? AND create_time <= ?", startDate, endDate).
 		Group("strftime('" + dateFormat + "', create_time)").Rows()

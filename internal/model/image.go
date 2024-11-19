@@ -1,6 +1,8 @@
 package model
 
-import dbModel "yuki-image/internal/db/model"
+import (
+	dbModel "yuki-image/internal/db/model"
+)
 
 const (
 	JPEG uint64 = 1

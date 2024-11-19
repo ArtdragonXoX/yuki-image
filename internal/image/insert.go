@@ -107,7 +107,7 @@ func Upload(tmpPath string, oname string, albumId uint64) (model.Image, error) {
 	if err != nil {
 		return model.Image{}, err
 	}
-	image.Url = utils.GetImageUrl(image)
+	image.Url = utils.GetImageUrl(newFileName)
 	file.Close()
 	if conf.Conf.Image.AutoDeleteTmp {
 		os.Remove(tmpPath)

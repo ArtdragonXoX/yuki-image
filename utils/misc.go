@@ -74,3 +74,12 @@ func WaitTcp(ip string, port string) {
 	defer conn.Close()
 	log.Println(fmt.Sprintf("Connected to %s", address))
 }
+
+func GenerateDateList(startDate time.Time, endDate time.Time) []string {
+	var dateList []string
+	for startDate.Before(endDate.AddDate(0, 0, 1)) {
+		dateList = append(dateList, startDate.Format("2006-01-02"))
+		startDate = startDate.AddDate(0, 0, 1)
+	}
+	return dateList
+}

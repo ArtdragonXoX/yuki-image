@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"time"
+	"yuki-image/utils"
 )
 
 const (
@@ -38,4 +39,16 @@ func (ct *CustomTime) FromString(s string) error {
 
 func (ct *CustomTime) Now() {
 	ct.Time = time.Now()
+}
+
+type Statictics map[string]uint64
+
+func (s *Statictics) FillZero(startTime time.Time, endTime time.Time) {
+	dateList := utils.GenerateDateList(startTime, endTime)
+	// 填充没有结果的日期
+	for _, date := range dateList {
+		if _, ok := (*s)[date]; !ok {
+			(*s)[date] = 0
+		}
+	}
 }
