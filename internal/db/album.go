@@ -150,3 +150,53 @@ func SelectAllCountStatistics(startDate time.Time, endDate time.Time) (model.Sta
 	}
 	return statistics, nil
 }
+
+func SelectSizeStatistics(albumId uint64, startDate time.Time, endDate time.Time) (model.Statictics, error) {
+	const dateFormat = "%Y-%m-%d"
+	var statistics = make(model.Statictics)
+	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, sum(size) as size").
+		Where("album_id = ? AND create_time >= ? AND create_time <= ?", albumId, startDate, endDate).
+		Group("strftime('" + dateFormat + "', create_time)").Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var date string
+	var size uint64
+	for rows.Next() {
+		err := rows.Scan(&date, &size)
+		if err != nil {
+			return nil, err
+		}
+		statistics[date] = size
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return statistics, nil
+}
+
+func SelectAllSizeStatistics(startDate time.Time, endDate time.Time) (model.Statictics, error) {
+	const dateFormat = "%Y-%m-%d"
+	var statistics = make(model.Statictics)
+	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, sum(size) as size").
+		Where("create_time >= ? AND create_time <= ?", startDate, endDate).
+		Group("strftime('" + dateFormat + "', create_time)").Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var date string
+	var size uint64
+	for rows.Next() {
+		err := rows.Scan(&date, &size)
+		if err != nil {
+			return nil, err
+		}
+		statistics[date] = size
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return statistics, nil
+}

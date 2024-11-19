@@ -84,3 +84,29 @@ func GetAllCountStatistics(dateS time.Time, dateE time.Time) (model.Statictics, 
 	statictics.FillZero(dateS, dateE)
 	return statictics, nil
 }
+
+func GetSizeStatistics(id uint64, dateS time.Time, dateE time.Time) (model.Statictics, error) {
+	statistics, err := db.SelectSizeStatistics(id, dateS, dateE)
+	if err != nil {
+		return nil, err
+	}
+	statistics.FillZero(dateS, dateE)
+	return statistics, nil
+}
+
+func GetSizeStatisticsFromName(name string, dateS time.Time, dateE time.Time) (model.Statictics, error) {
+	id, err := db.SelectAlbumIdFromName(name)
+	if err != nil {
+		return nil, err
+	}
+	return GetSizeStatistics(id, dateS, dateE)
+}
+
+func GetAllSizeStatistics(dateS time.Time, dateE time.Time) (model.Statictics, error) {
+	statictics, err := db.SelectAllSizeStatistics(dateS, dateE)
+	if err != nil {
+		return nil, err
+	}
+	statictics.FillZero(dateS, dateE)
+	return statictics, nil
+}

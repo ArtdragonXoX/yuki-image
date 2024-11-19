@@ -68,7 +68,8 @@ func InitAlbum(api *gin.RouterGroup) {
 		albumRoute.GET("/count/:id", handlers.GetAlbumCount)
 		albumRoute.GET("/count/statistics/:id", handlers.SelectCountStatistics)
 		albumRoute.GET("/count/statistics", handlers.SelectAllCountStatistics)
-
+		albumRoute.GET("/size/statistics/:id", handlers.SelectSizeStatistics)
+		albumRoute.GET("/size/statistics", handlers.SelectAllSizeStatistics)
 	}
 }
 
