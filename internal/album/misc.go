@@ -59,8 +59,8 @@ func GetCountFromName(name string) (uint64, error) {
 	return count, nil
 }
 
-func GetStatistics(id uint64, dateS time.Time, dateE time.Time) (model.Statictics, error) {
-	statistics, err := db.SelectStatistics(id, dateS, dateE)
+func GetCountStatistics(id uint64, dateS time.Time, dateE time.Time) (model.Statictics, error) {
+	statistics, err := db.SelectCountStatistics(id, dateS, dateE)
 	if err != nil {
 		return nil, err
 	}
@@ -68,16 +68,16 @@ func GetStatistics(id uint64, dateS time.Time, dateE time.Time) (model.Statictic
 	return statistics, nil
 }
 
-func GetStatisticsFromName(name string, dateS time.Time, dateE time.Time) (model.Statictics, error) {
+func GetCountStatisticsFromName(name string, dateS time.Time, dateE time.Time) (model.Statictics, error) {
 	id, err := db.SelectAlbumIdFromName(name)
 	if err != nil {
 		return nil, err
 	}
-	return GetStatistics(id, dateS, dateE)
+	return GetCountStatistics(id, dateS, dateE)
 }
 
-func GetAllStatistics(dateS time.Time, dateE time.Time) (model.Statictics, error) {
-	statictics, err := db.SelectAllStatistics(dateS, dateE)
+func GetAllCountStatistics(dateS time.Time, dateE time.Time) (model.Statictics, error) {
+	statictics, err := db.SelectAllCountStatistics(dateS, dateE)
 	if err != nil {
 		return nil, err
 	}

@@ -240,7 +240,7 @@ func DeleteFormatSupport(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "删除成功", Data: nil})
 }
 
-func SelectStatistics(ctx *gin.Context) {
+func SelectCountStatistics(ctx *gin.Context) {
 	param := ctx.Param("id")
 	id, err := strconv.Atoi(param)
 	idHasValue := err == nil && id > 0
@@ -256,9 +256,9 @@ func SelectStatistics(ctx *gin.Context) {
 	}
 	var statistics = make(map[string]uint64)
 	if !idHasValue {
-		statistics, err = ialbum.GetStatisticsFromName(param, startDate.Time, endDate.Time)
+		statistics, err = ialbum.GetCountStatisticsFromName(param, startDate.Time, endDate.Time)
 	} else {
-		statistics, err = ialbum.GetStatistics(uint64(id), startDate.Time, endDate.Time)
+		statistics, err = ialbum.GetCountStatistics(uint64(id), startDate.Time, endDate.Time)
 	}
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
@@ -267,7 +267,7 @@ func SelectStatistics(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, model.Response{Code: 1, Msg: "查询成功", Data: statistics})
 }
 
-func SelectAllStatistics(ctx *gin.Context) {
+func SelectAllCountStatistics(ctx *gin.Context) {
 	var startDate model.CustomTime
 	err := startDate.FromString(ctx.Query("start-time"))
 	if err != nil {
@@ -278,7 +278,7 @@ func SelectAllStatistics(ctx *gin.Context) {
 	if err != nil {
 		endDate.Now()
 	}
-	statistics, err := ialbum.GetAllStatistics(startDate.Time, endDate.Time)
+	statistics, err := ialbum.GetAllCountStatistics(startDate.Time, endDate.Time)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.Response{Code: 0, Msg: "查询失败", Data: err})
 		return

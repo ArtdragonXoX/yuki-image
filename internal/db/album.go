@@ -101,7 +101,7 @@ func ClearAlbum(albumId uint64) error {
 	return tx.Error
 }
 
-func SelectStatistics(albumId uint64, startDate time.Time, endDate time.Time) (model.Statictics, error) {
+func SelectCountStatistics(albumId uint64, startDate time.Time, endDate time.Time) (model.Statictics, error) {
 	const dateFormat = "%Y-%m-%d"
 	var statistics = make(model.Statictics)
 	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, count(*) as count").
@@ -126,7 +126,7 @@ func SelectStatistics(albumId uint64, startDate time.Time, endDate time.Time) (m
 	return statistics, nil
 }
 
-func SelectAllStatistics(startDate time.Time, endDate time.Time) (model.Statictics, error) {
+func SelectAllCountStatistics(startDate time.Time, endDate time.Time) (model.Statictics, error) {
 	const dateFormat = "%Y-%m-%d"
 	var statistics = make(model.Statictics)
 	rows, err := db.Table("images").Select("strftime('"+dateFormat+"', create_time) as date, count(*) as count").
