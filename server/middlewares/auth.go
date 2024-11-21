@@ -19,10 +19,15 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 		if !v {
 			if err := tokenVerify(c); err == nil {
 				v = true
+				err = tokenAutoRefresh(c)
+				if err != nil {
+					return
+				}
 			}
 		}
 		if !v {
-			c.JSON(http.StatusUnauthorized, model.RespError("token验证失败", nil))
+			c.JSON(http.StatusUnauthorized, model.RespError("用户未登录或token过期，请重新登录", nil))
+			c.Abort()
 			return
 		}
 		c.Next() // 继续处理请求

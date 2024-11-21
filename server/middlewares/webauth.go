@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"log"
 	"net/http"
 	"time"
 	"yuki-image/internal/model"
@@ -10,27 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-func TokenAuthUser() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// 验证token
-		err := tokenVerify(c)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		// 自动刷新token
-		err = tokenAutoRefresh(c)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		// 放行
-		c.Next()
-	}
-}
 
 func tokenAutoRefresh(c *gin.Context) error {
 	exp, err := utils.GetTokenExpire(c)
@@ -71,8 +49,6 @@ func tokenAutoRefresh(c *gin.Context) error {
 func tokenVerify(c *gin.Context) error {
 	err := utils.VerifyToken(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, model.RespError("用户未登录或token过期，请重新登录", nil))
-		c.Abort()
 		return err
 	}
 	return nil
