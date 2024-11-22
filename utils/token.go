@@ -20,8 +20,8 @@ var (
 )
 
 func init() {
-	Expire = 7200
-	Refresh = 3600
+	Expire = 86400
+	Refresh = 43200
 }
 
 // 生成token
@@ -29,7 +29,7 @@ func GenerateToken(name string) (string, error) {
 
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["uid"] = name
+	claims["name"] = name
 	claims["exp"] = time.Now().Add(time.Second * time.Duration(Expire)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 

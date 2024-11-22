@@ -25,7 +25,6 @@ func tokenAutoRefresh(c *gin.Context) error {
 		return nil
 	}
 
-	// 获取用户id
 	name, err := utils.GetTokenName(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, model.RespError("token无效，获取用户信息失败", nil))
