@@ -96,5 +96,9 @@ func InitSystem(api *gin.RouterGroup) {
 	{
 		systemRoute.GET("/tmp", handlers.GetTmpInfo)
 		systemRoute.DELETE("/tmp", handlers.ClearTmp)
+		systemRoute.GET("/conf", handlers.GetConf)
+		systemRoute.PUT("/conf", handlers.UpdateConf)
+		systemRoute.GET("/token", handlers.GetToken)
+		systemRoute.PUT("/token", handlers.UpdateToken)
 	}
 }

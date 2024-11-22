@@ -12,7 +12,7 @@ import (
 )
 
 // var timeMutex = &sync.Mutex{}
-var KeyLength int
+var KeyLength *int
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
 func PrettyStruct(data interface{}) (string, error) {
@@ -52,7 +52,7 @@ func GetRandKey() string {
 	// defer timeMutex.Unlock()
 	// time.Sleep(time.Microsecond)
 	rand.Seed(uint64(time.Now().UnixNano()))
-	key := make([]rune, KeyLength)
+	key := make([]rune, *KeyLength)
 	for i := range key {
 		key[i] = letters[rand.Intn(len(letters))]
 	}

@@ -19,7 +19,7 @@ const (
 	GIF  uint64 = 3
 )
 
-var BaseUrl string
+var BaseUrl *string
 
 func GetResampleFilter(i int) imaging.ResampleFilter {
 	switch i {
@@ -93,5 +93,5 @@ func ResizeImage(src image.Image, width, height int) image.Image {
 }
 
 func GetImageUrl(pathname string) string {
-	return fmt.Sprintf("%s/i/%s", BaseUrl, pathname)
+	return fmt.Sprintf("%s/i/%s", *BaseUrl, pathname)
 }

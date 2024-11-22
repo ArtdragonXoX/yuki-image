@@ -16,14 +16,6 @@ var db *gorm.DB
 var dbFile = "./database/yuki-image.db"
 
 func InitDataBase() error {
-	if conf.Conf.DB.Reset {
-		err := ResetDB()
-		if err != nil {
-			return err
-		}
-		conf.Conf.DB.Reset = false
-		utils.WriteYaml(conf.Conf, "config.yaml")
-	}
 	var err error
 	db, err = gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
@@ -38,6 +30,11 @@ func InitDataBase() error {
 }
 
 func ResetDB() error {
+	if db != nil {
+		if tmpdb, err := db.DB(); err == nil {
+			tmpdb.Close()
+		}
+	}
 	utils.EnsureDir(dbFile)
 	v, err := utils.IsFileExists(dbFile)
 	if err != nil {
