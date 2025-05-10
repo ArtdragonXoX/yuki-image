@@ -4,7 +4,7 @@ LABEL stage=gobuilder
 
 ENV CGO_ENABLED=1
 ENV GOPROXY=https://goproxy.cn,direct
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories
 
 RUN apk update --no-cache && apk add --no-cache tzdata
 
